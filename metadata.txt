@@ -1,0 +1,47 @@
+# This file contains metadata for your plugin.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=DANUBE-tool
+qgisMinimumVersion=3.16
+description=DANUBE Tool allow you to generate spatialized buildings' material informations from DANUBE database and urban scale typomorphological informations (IGN BDTOPO and/or Geoclimate tool's outputsl) 
+version=0.1b
+author=(C) LRA - ENSAT Toulouse / LMDC - INSA Toulouse / LISST - UT2J
+email=lra-tech@toulouse.archi.fr
+
+about=DANUBE Tool allow you to generate spatialized material informations on buildings from the DANUBE database and from urban scale typomorphological informations (from IGN BDTOPO data and/or from Geoclimate tool's outputs). DANUBE is an architectural Database which provides materiality informations from archetypal knownledge and sereval input data (building typology, usage, construction period and location).
+
+tracker=http://bugs
+repository=http://repo
+# End of mandatory metadata
+
+# Recommended items:
+
+hasProcessingProvider=yes
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=urban, architecture, building, typomorphology, materiality, renovation, modelling, environment, simulation
+
+homepage=http://homepage
+category=Analysis
+icon=icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
+# Since QGIS 3.8, a comma separated list of plugins to be installed
+# (or upgraded) can be specified.
+# Check the documentation for more information.
+# plugin_dependencies=
+
+Category of the plugin: Raster, Vector, Database or Web
+# category=
+
+# If the plugin can run on QGIS Server.
+server=False
+
