@@ -1,0 +1,22 @@
+TERRITOIRE,TERRITOIRE_SHORT_ID,TERRITOIRE_DESC
+ND,,Territoire ND
+FRANCE_ARDOISE,TARD,Territoire Ardoise
+FRANCE_BOIS_ARDOISE,TBO_ARD,Territoire Bois-Ardoise
+FRANCE_BOIS_TUILE,TBO_TUI,Territoire Bois-Tuile
+FRANCE_BRIQUE_TUILE,TBR_TUI,Territoire Brique-Tuile
+FRANCE_PIERRE_CALCAIRE_ZINC,TCA_ZIN,Territoire Pierre calcaire-Zinc
+FRANCE_PIERRE_CALCAIRE_ARDOISE,TCAL_ARD,Territoire Pierre calcaire-Ardoise
+FRANCE_PIERRE_CALCAIRE_TUILE,TCAL_TUI,Territoire Pierre calcaire-Tuile
+FRANCE,TF,Territoire France
+FRANCE_PIERRE_GALET_TUILE,TGAL_TUI,Territoire Pierre-Galet-Tuile
+FRANCE_PIERRE_GNEISS_TUILE,TGNE,Territoire Pierre-Gneiss-Tuile
+FRANCE_PIERRE_GRANITE_ARDOISE,TGRA_ARD,Territoire Pierre-Granite-Ardoise
+FRANCE_PIERRE_GRANITE_TUILE,TGRA_TUI,Territoire Pierre-Granite-Tuile
+FRANCE_PIERRE_GRES_ARDOISE,TGRE_ARD,Terrioire Pierre-Grès-Ardoise
+FRANCE_PIERRE_GRES_TUILE,TGRE_TUI,Territoire Pierre-Grès-Tuile
+FRANCE_PIERRE_MEULIERE_TUILE,TMEU,Territoire Pierre meulière-Tuile
+FRANCE_PIERRE_ARDOISE,TPI_ARD,Territoire Pierre-Ardoise
+FRANCE_PIERRE_SCHISTE_TUILE,TSCH_TUI,Territoire Pierre-Schiste-Tuile
+FRANCE_TERRE_TUILE,TTER_TUI,Territoire Terre-Tuile
+FRANCE_TUILE,TTUI,Territoire Tuile
+FRANCE_PIERRE_VOLCANIQUE_ARDOISE,TVOL_ARD,Territoire Pierre volcanique-Ardoise

@@ -1,0 +1,14 @@
+USAGE,USAGE_SHORT_DES,USAGE_DESC
+BATIMENT AGRICOLE,AGR,Bâtiment agricole
+CHATEAU,CHA,Château
+COMMERCE,COM,Commerce
+HABITAT ,HAB,Habitat 
+ILOT INFORMEL,II,Ilot informel
+BATIMENT INDUSTRIEL,IND,Bâtiment industriel
+LOCAL NON CHAUFFE,LNC,Local non chauffé
+BATIMENT RELIGIEUX,REL,Bâtiment religieux
+BATIMENT DE SANTE,SAN,Bâtiment de santé
+BATIMENT D ENSEIGNEMENT,SCO,Bâtiment d'enseignement
+SERRE AGRICOLE,SER,Serre agricole
+BATIMENT SPORTIF,SPO,Bâtiment sportif
+TERTIAIRE,TER,Tertiaire

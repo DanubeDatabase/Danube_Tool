@@ -1,7 +1,7 @@
 #/***************************************************************************
 # DANUBEtool
 #
-# DANUBE Tool allow you to generate spatialized buildings' material informations from DANUBE database and urban scale typomorphological informations (IGN BDTOPO and/or Geoclimate tool's outputsl) 
+# DANUBE Tool plugin allows you to generate spatialized buildings' material informations from DANUBE database and urban scale typomorphological informations (IGN BDTOPO data and Geoclimate tool's outputs)  
 #							 -------------------
 #		begin				: 2023-03-31
 #		git sha				: $Format:%H$

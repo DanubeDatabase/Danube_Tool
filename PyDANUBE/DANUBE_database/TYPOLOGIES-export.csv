@@ -1,0 +1,11 @@
+TYPOLOGIE_COMPLETE,TYPOLOGIE_SIMPLE,TYPOLOGIE_DESC,TYPOLOGIE_SIMPLE_DESC
+BA,BA,Bâtiment d'activité,BATIMENT D'ACTIVITE
+BGH,IGH,Bâtiment de grande hauteur,IGH
+ICIF,I,Immeuble continu sur îlot fermé,IMMEUBLE
+ICIO,I,Immeuble continu sur îlot ouvert,IMMEUBLE
+ID,I,Immeuble discontinu,IMMEUBLE
+II,II,Ilot informel,ILOT INFORMEL
+PCIF,P,Pavillon continu îlot fermé,PAVILLON
+PCIO,P,Pavillon continu îlot ouvert,PAVILLON
+PD,P,Pavillon discontinu,PAVILLON
+PSC,P,Pavillon semi-continu,PAVILLON
