@@ -34,8 +34,12 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessing,
                        QgsFeatureSink,
                        QgsProcessingAlgorithm,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterFile,
                        QgsProcessingParameterFeatureSource,
-                       QgsProcessingParameterFeatureSink)
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterNumber
+                       )
 
 
 class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
@@ -58,6 +62,8 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
 
     OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
+    INPUT_BUILDINGS = 'INPUT_BUILDINGS'
+    FILOSOFI = 'FILOSOFI'
 
     def initAlgorithm(self, config):
         """
@@ -65,23 +71,39 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         with some other properties.
         """
 
-        # We add the input vector features source. It can have any kind of
-        # geometry.
+        # Add the Geoclimate vector features source input folder. 
+        self.addParameter(
+            QgsProcessingParameterFile(
+                self.INPUT,
+                self.tr('Geoclimate Input layers folder'),
+                behavior=QgsProcessingParameterFile.Folder  
+            )
+        )
+        
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.INPUT,
-                self.tr('Input layer'),
+                self.INPUT_BUILDINGS,
+                self.tr('Geoclimate Buildings layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
-
+        
+        # Add the FILOSOFI vector features layer (INSEE data at grid format). 
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.FILOSOFI,
+                self.tr('FILOSOFI Input layers'),
+                [QgsProcessing.TypeVectorAnyGeometry]
+            )
+        )
+        
         # We add a feature sink in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the
         # algorithm is run in QGIS).
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
-                self.tr('Output layer')
+                self.tr('DANUBE Data Output layer')
             )
         )
 
@@ -93,9 +115,13 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
-        source = self.parameterAsSource(parameters, self.INPUT, context)
+        #source = self.parameterAsSource(parameters, self.INPUT, context)
+        source_folder_path = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
+        source = self.parameterAsSource(parameters, self.INPUT_BUILDINGS, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                 context, source.fields(), source.wkbType(), source.sourceCrs())
+        ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
+        print('Geoclimate Input layers folder:'+str(source_folder_path))
 
         # Compute the number of steps to display within the progress bar and
         # get features from source

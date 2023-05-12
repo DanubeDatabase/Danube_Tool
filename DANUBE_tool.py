@@ -23,8 +23,8 @@
 """
 
 __author__ = 'Serge Faraut - (C) LRA - ENSAT Toulouse'
-__date__ = '2023-04-21'
-__version__ = '0.0.2'
+__date__ = '2023-05-12'
+__version__ = '0.0.3'
 __copyright__ = '(C) 2023 by (C) LRA - ENSAT Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 # This will get replaced with a git SHA1 when you do a git archive
