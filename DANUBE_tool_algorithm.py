@@ -125,6 +125,7 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
         #print('Geoclimate Input layers folder:'+str(source_folder))
         #QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
+        #Display Geoclimate folder path inputs
         source_folder_path = self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
         QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
 
