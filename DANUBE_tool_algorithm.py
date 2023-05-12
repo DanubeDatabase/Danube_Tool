@@ -31,7 +31,9 @@ __copyright__ = '(C) 2023 by (C) LRA - ENSAT Toulouse / LMDC - INSA Toulouse / L
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessing,
+from qgis.core import (Qgis,
+                       QgsMessageLog,
+                       QgsProcessing,
                        QgsFeatureSink,
                        QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorDestination,
@@ -116,12 +118,15 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
-        source_folder_path = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
+        source_folder = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
         source = self.parameterAsSource(parameters, self.INPUT_BUILDINGS, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
-        print('Geoclimate Input layers folder:'+str(source_folder_path))
+        #print('Geoclimate Input layers folder:'+str(source_folder))
+        #QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
+        source_folder_path = self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
+        QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
 
         # Compute the number of steps to display within the progress bar and
         # get features from source
