@@ -23,8 +23,9 @@
 """
 
 __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
-__date__ = '2023-04-19'
+__date__ = '2023-05-16'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
+__version__ = 'v0.0.5'
 __all__ = [
     'DANUBE_database',
 ]

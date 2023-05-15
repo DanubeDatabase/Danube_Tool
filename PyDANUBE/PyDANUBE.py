@@ -31,6 +31,7 @@ import numpy as np
 import shutil
 import time
 import os
+import tempfile
 
 # Define DANUBE Database class
 
@@ -50,14 +51,18 @@ class DANUBE_database:
         if (path !=''):
             self.path = path 
         else:
-            self.path = DEFAULT_DANUBE_PATH
+            #self.path = DEFAULT_DANUBE_PATH
+            self.path = os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
         self.DANUBE_tables = {}
         return
     
-    # DANUBE_load_database_core() : load DANUBE_core (tables)
+    # DANUBE_load_database_core() : load DANUBE_core data (all data tables)
     # Read all DANUBE tables (CATALOGUE, DISPOSITIF_TOITS, DISPOSITIFS_MUR, PERIOD, ...)
     def DANUBE_load_database_core(self):
-        danube_data_path =  os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
+        if self.path == '':
+            danube_data_path =  os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
+        else:
+            danube_data_path = self.path
         print("Current Database path:"+danube_data_path)
         for table_name in DEFAULT_DANUBE_DATA_TABLES:
             #process reading table
@@ -67,21 +72,57 @@ class DANUBE_database:
             self.DANUBE_tables[table_name] = df
         return
     
-    # Generate DANUBE_extended (one table form)
+    # Generate DANUBE_extended database (one table form) from all separate tables
     def DANUBE_generate_extended(self):
+        ### Make join between tables using merges on rith keys
+        database_ref = self.DANUBE_tables['CATALOGUE']
+        database_disp_toits = self.DANUBE_tables['DISPOSITIF_TOITS']
+        database3 = database_disp_toits.add_suffix('_T1')
+        ###TODO### : correct 'DISPOSTIIF_TOIT_ OPTION1' to 'DISPOSTIF_TOIT_ OPTION1'
+        #merged = pd.merge(database_ref, database2, how='left', left_on=['DISPOSTIIF_TOIT_ OPTION1'], right_on=['DISPOSITIF'], suffixes=(None, '_1')) ### Do not work as intended...
+        merged = pd.merge(database_ref, database3, how='left', left_on=['DISPOSTIIF_TOIT_ OPTION1'], right_on=['DISPOSITIF_T1'])
+        #merged.rename(columns={'DISPOSITIF_1':'DISPOSITIF_T1'}, inplace=True)
+        
+        database3 = database_disp_toits.add_suffix('_T2')
+        merged = pd.merge(merged, database3, how='left', left_on=['DISPOSITIF_TOIT_OPTION2'], right_on=['DISPOSITIF_T2'])
+        #merged.rename(columns={'DISPOSITIF_2':'DISPOSITIF_T2'}, inplace=True)
+        
+        database_disp_murs = self.DANUBE_tables['DISPOSITIFS_MUR']
+        database3 = database_disp_murs.add_suffix('_M1')
+        merged = pd.merge(merged, database3, how='left', left_on=['DISPOSITIF_MUR_OPTION1'], right_on=['DISPOSITIF_M1'])
+        #merged.rename(columns={'DISPOSITIF_1':'DISPOSITIF_M1'}, inplace=True)
+        
+        database3 = database_disp_murs.add_suffix('_M2')
+        merged = pd.merge(merged, database3, how='left', left_on=['DISPOSITIF_MUR_OPTION2'], right_on=['DISPOSITIF_M2'])
+        #merged.rename(columns={'DISPOSITIF_2':'DISPOSITIF_M2'}, inplace=True)
+        
+        database3 = database_disp_murs.add_suffix('_M3')
+        merged = pd.merge(merged, database3, how='left', left_on=['DISPOSITIF_MUR_OPTION2'], right_on=['DISPOSITIF_M3'])
+        #merged.rename(columns={'DISPOSITIF_3':'DISPOSITIF_M3'}, inplace=True)
+        
+        self.DANUBE_database_extended = merged
         return
+    
+    # Export DANUBE Extended Database to CSV File (to temporary file)
+    def DANUBE_export_extended_database(self):
+        f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
+        f_name = f.name
+        print('Exporting DANUBE Extended Database to :'+ f_name)
+        self.DANUBE_database_extended.to_csv(f.name, sep=';', encoding='utf-8')
+        return f_name
     
     # Generate DANUBE_generalized (généralized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
     def DANUBE_generate_generalized(self):
+        self.DANUBE_database_generalizd = self.DANUBE_database_extended
         return
     
-    def load_database(self):
+    def DANUBE_load_database(self,custom_db_path=''):
         # Read data from self.path
-        DANUBE_load_database_core(self)
+        self.DANUBE_load_database_core(db_path)
         # Generate DANUBE_extended (one table form)
-        DANUBE_generate_extended(self)
-        # Generate DANUBE_generalizd (généralized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
-        DANUBE_generate_generalized(self)
+        self.DANUBE_generate_extended(self)
+        # Generate DANUBE_generalizd (Generalized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
+        self.DANUBE_generate_generalized(self)
         return
     
     # Return DANUBE period from building's construction date

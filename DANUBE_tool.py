@@ -43,6 +43,10 @@ cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
+user_dirpath = QgsApplication.qgisSettingsDirPath() #'C:/Users/Username/AppData/Roaming/QGIS/QGIS3\\profiles\\default/'
+danube_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool')
+if danube_dirpath not in sys.path:
+    sys.path.append(danube_dirpath)
 
 class DANUBEtoolPlugin(object):
 
