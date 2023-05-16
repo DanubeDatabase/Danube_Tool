@@ -44,7 +44,7 @@ class DANUBE_database:
     
     __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     __date__ = '2023-04-19'
-    __version__ = '0.0.1'
+    __version__ = '0.0.6'
     __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     
     def __init__(self, path=''):
@@ -54,6 +54,7 @@ class DANUBE_database:
             #self.path = DEFAULT_DANUBE_PATH
             self.path = os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
         self.DANUBE_tables = {}
+        self.DANUBE_database_extended = pd.DataFrame() ### Empty Dataframe
         return
     
     # DANUBE_load_database_core() : load DANUBE_core data (all data tables)
@@ -74,7 +75,7 @@ class DANUBE_database:
     
     # Generate DANUBE_extended database (one table form) from all separate tables
     def DANUBE_generate_extended(self):
-        ### Make join between tables using merges on rith keys
+        ### Make join between tables using merges on rigth keys
         database_ref = self.DANUBE_tables['CATALOGUE']
         database_disp_toits = self.DANUBE_tables['DISPOSITIF_TOITS']
         database3 = database_disp_toits.add_suffix('_T1')
@@ -167,6 +168,20 @@ class DANUBE_database:
         else:
             print("Warning: Archetype for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
         return danube_archetype
+    
+    #Get All DANUBE's archetype informations 
+    def DANUBE_get_archetype_informations(self, Nom_typologie="HAB_P_P7_TF"):
+        infos = pd.DataFrame() ### Empty Dataframe
+        danube_all_archetypes_info = self.DANUBE_database_extended
+        if danube_all_archetypes_info.empty:
+            print('DANUBE extended database is empty. Cannot get informations for archetypes :' + Nom_typologie+'...')
+            return infos
+        infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['NUMERO_TYPOLOGIE'] == Nom_typologie)]
+        if not infos_rows.empty:
+            infos = infos_rows # Dataframe! Get individual values with column index. Ex: infos_rows['NUMERO_PERIODE'].values[0]
+        else:
+            print('Warning: Archetype '+Nom_typologie+' is not defined in DANUBE.')
+        return infos
 
 if __name__ == '__main__':
     print("DANUBE_database " + __version__)
