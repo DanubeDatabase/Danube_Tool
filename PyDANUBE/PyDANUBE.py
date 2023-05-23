@@ -37,16 +37,28 @@ import tempfile
 
 # Default DANUBE database local folder path (relative)
 DEFAULT_DANUBE_PATH = 'DANUBE_database'
-## All DANUBE database table names
-DEFAULT_DANUBE_DATA_TABLES = ('CATALOGUE', 'DISPOSITIF_TOITS','DISPOSITIFS_MUR','PERIODES','PLANCHERS','ROUTES','TERRITOIRES_PERIODES','TERRITOIRES','TYPOLOGIES','USAGES','VENTILATION')
+## All DANUBE database table id names (and path) - stored in a static global dictionnary
+# DEFAULT_DANUBE_DATA_TABLES = ('CATALOGUE', 'DISPOSITIF_TOITS','DISPOSITIFS_MUR','PERIODES','PLANCHERS','ROUTES','TERRITOIRES_PERIODES','TERRITOIRES','TYPOLOGIES','USAGES','VENTILATION')
+DEFAULT_DANUBE_DATA_TABLES = { 
+        'CATALOGUE' : 'CATALOGUE',
+        'DISPOSITIF_TOITS' : 'DISPOSITIF_TOITS',
+        'DISPOSITIFS_MUR' : 'DISPOSITIFS_MUR',
+        'PERIODES' : 'PERIODES',
+        'PLANCHERS' : 'PLANCHERS','ROUTES' : 'ROUTES',
+        'TERRITOIRES_PERIODES_DEPARTEMENT' : 'TERRITOIRES_PERIODES-DEPT-V4',
+        'TERRITOIRES_PERIODES_COMMUNE' : 'TERRITOIRES_PERIODES-COMMUNE-V5',
+        'TERRITOIRES' : 'TERRITOIRES',
+        'TYPOLOGIES' : 'TYPOLOGIES',
+        'USAGES' : 'USAGES',
+        'VENTILATION' : 'VENTILATION'}
 
 class DANUBE_database:
     
     __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     __date__ = '2023-04-19'
     __version__ = '0.0.6'
-    __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     
+    __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     def __init__(self, path=''):
         if (path !=''):
             self.path = path 
@@ -65,10 +77,11 @@ class DANUBE_database:
         else:
             danube_data_path = self.path
         print("Current Database path:"+danube_data_path)
-        for table_name in DEFAULT_DANUBE_DATA_TABLES:
+        for table_name, table_path in DEFAULT_DANUBE_DATA_TABLES.items():
+        #for table_name in DEFAULT_DANUBE_DATA_TABLES:
             #process reading table
-            cvs_filename = os.path.join(danube_data_path, table_name+'-export.csv')
-            print("Reading DANUBE table:"+table_name+" filename:"+cvs_filename)
+            cvs_filename = os.path.join(danube_data_path, table_path+'-export.csv')
+            print("Reading DANUBE table:"+table_name+" from filename:"+cvs_filename)
             df = pd.read_csv(cvs_filename)
             self.DANUBE_tables[table_name] = df
         return
@@ -138,28 +151,45 @@ class DANUBE_database:
             print("Warning: ", construct_date, ' is not defined in DANUBE. Default P7 period used')
         return danube_construction_period
     
-    # Return DANUBE Material Territory from building's location (DEPARTEMENT) and Period - TODO: Use same at commune's scale
+    # Return DANUBE Material Territory from building's location (at DEPARTEMENT or COMMUNE scale) and Period
+    # TODO: Define territory at commune's scale
     # Territory is distinct for P1 period and P2-P7 period
-    def DANUBE_get_territory(self, building_location = '31', construction_period = 'P7'):
+    def DANUBE_get_territory(self, building_location = '31', construction_period = 'P7', scale='DEPARTEMENT'):
         danube_territory = 'FRANCE'
-        territoires_periodes = self.DANUBE_tables["TERRITOIRES_PERIODES"]
-        territoire = territoires_periodes.loc[territoires_periodes['CODE_DEPT'] == building_location]
-        if not territoire.empty:
-            if construction_period == 'P1':
-                danube_territory = territoire['TERR_P1'].values[0]
+        if scale == 'DEPARTEMENT': ### Use TERRITOIRES_PERIODES_DEPARTEMENT table
+            territoires_periodes = self.DANUBE_tables["TERRITOIRES_PERIODES_DEPARTEMENT"]
+            territoire = territoires_periodes.loc[territoires_periodes['INSEE_DEP'] == building_location]
+            if not territoire.empty:
+                if construction_period == 'P1':
+                    danube_territory = territoire['Terr_P1'].values[0]
+                else:
+                    ### All other P2-P7 Territories
+                    danube_territory = territoire['Terr_P2'].values[0]
             else:
-                ### All other P2-P7 Territories
-                danube_territory = territoire['TERR_P2-P7'].values[0]
+                print("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+        elif scale == 'COMMUNE': ### Use TERRITOIRES_PERIODES-COMMUNE table
+            territoires_periodes = self.DANUBE_tables["TERRITOIRES_PERIODES_COMMUNE"]
+            territoire = territoires_periodes.loc[territoires_periodes['INSEE_COM'] == building_location]
+            if not territoire.empty:
+                if construction_period == 'P1':
+                    danube_territory = territoire['Terr_P1'].values[0]
+                else:
+                    ### All other P2-P7 Territories
+                    danube_territory = territoire['Terr_P2'].values[0]
+            else:
+                print("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+             #  print('Error in DANUBE_get_territory: Territory\'s commune scale not yet implemented')
         else:
-            print("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+            print('Error in DANUBE_get_territory: ',scale,' scale is unknown... Returning default FRANCE territory.')
         return danube_territory
     
-    # Get DANUBE core archetype (only from Catalogue) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION
-    def DANUBE_get_core_archetype(self, Nom_typologie="P", Usage="HABITAT", Construction_date="2023", Location="31"):
+    # Get DANUBE core archetype (only from Catalogue) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
+    # And optional input scale 'DEPARTEMENT' (default) or 'COMMUNE'.
+    def DANUBE_get_core_archetype(self, Nom_typologie="P", Usage="HABITAT", Construction_date="2023", Location="31", scale='DEPARTEMENT'):
         danube_archetype="HAB_P_P7_TF" # Default value
         danube_archetypes_all = self.DANUBE_tables["CATALOGUE"]
         periode  = self.DANUBE_get_period_from_date(Construction_date) # Get Period
-        territoire = self.DANUBE_get_territory(Location, periode)      # Get Territory
+        territoire = self.DANUBE_get_territory(Location, periode, scale)      # Get Territory
         # Fetch archetype data from CATALOGUE
         archetype = danube_archetypes_all.loc[ (danube_archetypes_all['NOM_TYPOLOGIE'] == Nom_typologie) & (danube_archetypes_all['USAGE'] == Usage) &
             (danube_archetypes_all['NUMERO_PERIODE'] == periode) & (danube_archetypes_all['TERRITOIRE'] == territoire)]
@@ -170,17 +200,17 @@ class DANUBE_database:
         return danube_archetype
     
     #Get All DANUBE's archetype informations 
-    def DANUBE_get_archetype_informations(self, Nom_typologie="HAB_P_P7_TF"):
+    def DANUBE_get_archetype_informations(self, id_archetype="HAB_P_P7_TF"):
         infos = pd.DataFrame() ### Empty Dataframe
         danube_all_archetypes_info = self.DANUBE_database_extended
         if danube_all_archetypes_info.empty:
-            print('DANUBE extended database is empty. Cannot get informations for archetypes :' + Nom_typologie+'...')
+            print('DANUBE extended database is empty. Cannot get informations for archetypes :' + id_archetype + '...')
             return infos
-        infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['NUMERO_TYPOLOGIE'] == Nom_typologie)]
+        infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['NUMERO_TYPOLOGIE'] == id_archetype)]
         if not infos_rows.empty:
             infos = infos_rows # Dataframe! Get individual values with column index. Ex: infos_rows['NUMERO_PERIODE'].values[0]
         else:
-            print('Warning: Archetype '+Nom_typologie+' is not defined in DANUBE.')
+            print('Warning: Archetype ' + id_archetype+' is not defined in DANUBE.')
         return infos
 
 if __name__ == '__main__':
