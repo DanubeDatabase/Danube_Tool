@@ -92,9 +92,7 @@ class DANUBE_database:
         database_ref = self.DANUBE_tables['CATALOGUE']
         database_disp_toits = self.DANUBE_tables['DISPOSITIF_TOITS']
         database3 = database_disp_toits.add_suffix('_T1')
-        ###TODO### : correct 'DISPOSTIIF_TOIT_ OPTION1' to 'DISPOSTIF_TOIT_ OPTION1'
-        #merged = pd.merge(database_ref, database2, how='left', left_on=['DISPOSTIIF_TOIT_ OPTION1'], right_on=['DISPOSITIF'], suffixes=(None, '_1')) ### Do not work as intended...
-        merged = pd.merge(database_ref, database3, how='left', left_on=['DISPOSTIIF_TOIT_ OPTION1'], right_on=['DISPOSITIF_T1'])
+        merged = pd.merge(database_ref, database3, how='left', left_on=['DISPOSITIF_TOIT_OPTION1'], right_on=['DISPOSITIF_T1'])
         #merged.rename(columns={'DISPOSITIF_1':'DISPOSITIF_T1'}, inplace=True)
         
         database3 = database_disp_toits.add_suffix('_T2')
@@ -122,7 +120,7 @@ class DANUBE_database:
         f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
         f_name = f.name
         print('Exporting DANUBE Extended Database to :'+ f_name)
-        self.DANUBE_database_extended.to_csv(f.name, sep=';', encoding='utf-8')
+        self.DANUBE_database_extended.to_csv(f.name, sep=';', encoding='utf-8', index=False)
         return f_name
     
     # Generate DANUBE_generalized (généralized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
@@ -152,7 +150,6 @@ class DANUBE_database:
         return danube_construction_period
     
     # Return DANUBE Material Territory from building's location (at DEPARTEMENT or COMMUNE scale) and Period
-    # TODO: Define territory at commune's scale
     # Territory is distinct for P1 period and P2-P7 period
     def DANUBE_get_territory(self, building_location = '31', construction_period = 'P7', scale='DEPARTEMENT'):
         danube_territory = 'FRANCE'

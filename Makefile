@@ -5,7 +5,7 @@
 #							 -------------------
 #		begin				: 2023-03-31
 #		git sha				: $Format:%H$
-#		copyright			: (C) 2023 by (C) LRA - ENSAT Toulouse / LMDC - INSA Toulouse / LISST - UT2J
+#		copyright			: (C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J
 #		email				: lra-tech@toulouse.archi.fr
 # ***************************************************************************/
 #
