@@ -1,0 +1,41 @@
+VARIABLE,DESCRIPTION
+"'archetype',",Archétype Danube concaténé par Période-Typologie-Usage-Territoire.
+" 'U_wall_0',",Valeur U du dispositif mur Danube sans considérer une possible couche isolante. La valeur est basée sur la méthode 3CL 2012 du DPE selon la composition du dispositif. 
+" 'U_wall_min',",Valeur U minimale du dispositif mur Danube en considérant sa composition et la méthode 3CL 2012 du DPE. Cette valeur est utilisée comme le seuil de rénovation. 
+" 'U_wall_max',",Valeur U maximale du dispositif mur Danube en considérant sa composition et la méthode 3CL 2012 du DPE. Cette valeur est à titre illustratif et permet de vérifier les bâtiments avec une performance thermique inférieure à celle prévue par Danube.
+" 'perc_below_lim_wall',",Pourcentage des bâtiments avec une valeur U de mur inférieure  à U_wall_min.
+" 'perc_within_lim_wall',",Pourcentage des bâtiments avec une valeur U de mur entre U_wall_min et U_wall_max.
+" 'perc_above_lim_wall',",Pourcentage des bâtiments avec une valeur U de mur supérieure à U_wall_max.
+" 'U_roof_0_moy',",Valeur U du dispositif toit Danube sans considérer une possible couche isolante. La valeur est basée sur la méthode 3CL 2012 du DPE selon la composition du dispositif. 
+" 'U_roof_min',",Valeur U minimale du dispositif toit Danube en considérant sa composition et la méthode 3CL 2012 du DPE. Cette valeur est utilisée comme le seuil de rénovation. 
+" 'U_roof_max',",Valeur U maximale du dispositif toit Danube en considérant sa composition et la méthode 3CL 2012 du DPE. Cette valeur est à titre illustratif et permet de vérifier les bâtiments avec une performance thermique inférieure à celle prévue par Danube.
+" 'perc_below_lim_roof',",Pourcentage des bâtiments avec une valeur U de toit inférieure à U_wall_min.
+" 'perc_within_lim_roof',",Pourcentage des bâtiments avec une valeur U de toit entre U_wall_min et U_wall_max.
+" 'perc_above_lim_roof',",Pourcentage des bâtiments avec une valeur U de toit supérieure à U_wall_max.
+" 'perc_wall',",Pourcentage de bâtiments dans la catégorie en rapport à tous les bâtiments de l'archétype.
+" 'wall_count',",Quantité de bâtiments dans la catégorie du préfixe.
+" 'wall_mean',",Moyenne de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_std',",Écart type de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_min',",Valeur minimale de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_Q1',",Premier quartile de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_Q2',",Deuxième quartile (médiane) de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_Q3',",Troisième quartile de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_max',",Valeur maximale de la valeur U du mur de bâtiments dans la catégorie du préfixe.
+" 'wall_EP_ISOL_M1_med',",Épaisseur équivalente de laine minérale en considérant U_wall_0 et wall_Q2 des bâtiments dans la catégorie du préfixe.
+" 'wall_EP_ISOL_M1_moy',",Épaisseur équivalente de laine minérale en considérant U_wall_0 et wall_mean des bâtiments dans la catégorie du préfixe.
+" 'perc_roof',",Pourcentage de bâtiments dans la catégorie en rapport à tous les bâtiments dans la catégorie du préfixe.
+" 'roof_count',",Quantité de bâtiments dans la catégorie du préfixe.
+" 'roof_mean',",Moyenne de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_std',",Écart type de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_min',",Valeur minimale de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_Q1',",Premier quartile de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_Q2',",Deuxième quartile (médiane) de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_Q3',",Troisième quartile de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_max',",Valeur maximale de la valeur U du toit de bâtiments dans la catégorie du préfixe.
+" 'roof_EP_ISOL_T1_med',",Épaisseur équivalente de laine minérale en considérant U_roof_0_moy et roof_Q2 de bâtiments dans la catégorie du préfixe.
+ 'roof_EP_ISOL_T1_moy' ,Épaisseur équivalente de laine minérale en considérant U_roof_0_moy¯ et roof_mean de bâtiments dans la catégorie du préfixe.
+,
+PREFIX,DESCRIPTION
+dist,En rapport à toute la distribution de valeur U. Tous les bâtiments d'un l'archétype sont inclus.
+renov,En rapport à la partie considérée comme rénovée de la distribution de valeur U d'un l'archétype. Seulement les bâtiments avec une valeur U du dispositif inférieure à la valeur U minimale sont inclus.
+nonrnv,En rapport à la partie considérée comme non rénovée de la distribution de valeur U d'un l'archétype. Seulement les bâtiments avec une valeur U du dispositif supérieure à la valeur U minimale sont inclus.

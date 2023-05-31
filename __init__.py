@@ -23,8 +23,8 @@
 """
 
 __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
-__date__ = '2023-04-21'
-__version__ = '0.0.2'
+__date__ = '2023-05-31'
+__version__ = '0.2.0c'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 

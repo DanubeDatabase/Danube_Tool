@@ -23,7 +23,7 @@
 """
 
 __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
-__date__ = '2023-05-24'
+__date__ = '2023-03-31'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 # This will get replaced with a git SHA1 when you do a git archive
@@ -43,8 +43,9 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber
                        )
 
+from .DANUBE_preprocessing_tools import danube_preprocess_sample
 
-class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
+class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
     creates a new identical one.
@@ -64,8 +65,9 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
 
     OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
-    INPUT_BUILDINGS = 'INPUT_BUILDINGS'
-    INPUT_PREPROCESSED = 'INPUT_PREPROCESSED'
+    GEOCLIMATE_INPUT_BUILDINGS_UTRF = 'GEOCLIMATE_INPUT_BUILDINGS_UTRF'
+    BDTOPO_INPUT_BUILDINGS = 'BDTOPO_INPUT_BUILDINGS'
+    BDTOPO_INPUT_ACTIVITIES = 'BDTOPO_INPUT_ACTIVITIES'
     FILOSOFI = 'FILOSOFI'
 
     def initAlgorithm(self, config):
@@ -85,7 +87,7 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.INPUT_BUILDINGS,
+                self.GEOCLIMATE_INPUT_BUILDINGS_UTRF,
                 self.tr('Geoclimate Buildings layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
@@ -93,8 +95,16 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.INPUT_PREPROCESSED,
-                self.tr('Pre-processed building data layer (step1)'),
+                self.BDTOPO_INPUT_BUILDINGS,
+                self.tr('BDTOPO V3 Buildings layer'),
+                [QgsProcessing.TypeVectorAnyGeometry]
+            )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                self.BDTOPO_INPUT_ACTIVITIES,
+                self.tr('BDTOPO V3 Activities layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
@@ -114,7 +124,7 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         self.addParameter(
             QgsProcessingParameterFeatureSink(
                 self.OUTPUT,
-                self.tr('DANUBE Data Output layer')
+                self.tr('Pre-processed Data Output layer')
             )
         )
 
@@ -127,8 +137,8 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
-        source_folder = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
-        source = self.parameterAsSource(parameters, self.INPUT_BUILDINGS, context)
+        source_folder = self.parameterAsFile(parameters, self.GEOCLIMATE_INPUT_BUILDINGS_UTRF, context)
+        source = self.parameterAsSource(parameters, self.GEOCLIMATE_INPUT_BUILDINGS_UTRF, context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
@@ -160,6 +170,10 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
+        
+        ###EN_COURS### Test calling external preprocess funtion
+        danube_preprocess_sample.preprocess_function_sample(self, parameters, context, feedback)
+        
         return {self.OUTPUT: dest_id}
 
     def name(self):
@@ -170,7 +184,7 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'Generate DANUBE\'s building data'
+        return 'Data preprocessing for DANUBE generation'
 
     def displayName(self):
         """
@@ -197,11 +211,11 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         return 'DANUBE tool'
     def shortHelpString(self):
         return """
-        Select data source layers (including pre-process data) for DANUBE data generation . New layer with all DANUBE generated building's information layers will be created.
+        Select data source layers for DANUBE Pre-processing (BDTOPO V3, Geoclimate, FILOSOFI). New indicators layers will be genererated.
         """
 
     def tr(self, string):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return DANUBEtoolAlgorithm()
+        return DANUBEtool_preprocess()

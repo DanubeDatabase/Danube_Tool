@@ -40,17 +40,23 @@ DEFAULT_DANUBE_PATH = 'DANUBE_database'
 ## All DANUBE database table id names (and path) - stored in a static global dictionnary
 # DEFAULT_DANUBE_DATA_TABLES = ('CATALOGUE', 'DISPOSITIF_TOITS','DISPOSITIFS_MUR','PERIODES','PLANCHERS','ROUTES','TERRITOIRES_PERIODES','TERRITOIRES','TYPOLOGIES','USAGES','VENTILATION')
 DEFAULT_DANUBE_DATA_TABLES = { 
-        'CATALOGUE' : 'CATALOGUE',
-        'DISPOSITIF_TOITS' : 'DISPOSITIF_TOITS',
-        'DISPOSITIFS_MUR' : 'DISPOSITIFS_MUR',
-        'PERIODES' : 'PERIODES',
-        'PLANCHERS' : 'PLANCHERS','ROUTES' : 'ROUTES',
-        'TERRITOIRES_PERIODES_DEPARTEMENT' : 'TERRITOIRES_PERIODES-DEPT-V4',
-        'TERRITOIRES_PERIODES_COMMUNE' : 'TERRITOIRES_PERIODES-COMMUNE-V5',
-        'TERRITOIRES' : 'TERRITOIRES',
-        'TYPOLOGIES' : 'TYPOLOGIES',
-        'USAGES' : 'USAGES',
-        'VENTILATION' : 'VENTILATION'}
+        'CATALOGUE' : 'CATALOGUE-export',
+        'DISPOSITIF_TOITS' : 'DISPOSITIF_TOITS-export',
+        'DISPOSITIFS_MUR' : 'DISPOSITIFS_MUR-export',
+        'PERIODES' : 'PERIODES-export',
+        'PLANCHERS' : 'PLANCHERS-export','ROUTES' : 'ROUTES-export',
+        'TERRITOIRES_PERIODES_DEPARTEMENT' : 'TERRITOIRES_PERIODES-DEPT-V4-export',
+        'TERRITOIRES_PERIODES_COMMUNE' : 'TERRITOIRES_PERIODES-COMMUNE-V5-export',
+        'TERRITOIRES' : 'TERRITOIRES-export',
+        'TYPOLOGIES' : 'TYPOLOGIES-export',
+        'RENOVATION-complete_study': 'RENOVATION-complete_study',
+        'RENOVATION-distribution_not_renovated_part' : 'RENOVATION-distribution_not_renovated_part',
+        'RENOVATION-distribution_renovated_part' :'RENOVATION-distribution_renovated_part',
+        'RENOVATION-distribution_whole' : 'RENOVATION-distribution_whole',
+        'RENOVATION-limits_percentages' : 'RENOVATION-limits_percentages',
+        'RENOVATION-metadata' : 'RENOVATION-metadata',
+        'USAGES' : 'USAGES-export',
+        'VENTILATION' : 'VENTILATION-export'}
 
 class DANUBE_database:
     
@@ -67,6 +73,7 @@ class DANUBE_database:
             self.path = os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
         self.DANUBE_tables = {}
         self.DANUBE_database_extended = pd.DataFrame() ### Empty Dataframe
+        self.DANUBE_database_generalized = pd.DataFrame() ### Empty Dataframe
         return
     
     # DANUBE_load_database_core() : load DANUBE_core data (all data tables)
@@ -80,13 +87,13 @@ class DANUBE_database:
         for table_name, table_path in DEFAULT_DANUBE_DATA_TABLES.items():
         #for table_name in DEFAULT_DANUBE_DATA_TABLES:
             #process reading table
-            cvs_filename = os.path.join(danube_data_path, table_path+'-export.csv')
+            cvs_filename = os.path.join(danube_data_path, table_path+'.csv')
             print("Reading DANUBE table:"+table_name+" from filename:"+cvs_filename)
             df = pd.read_csv(cvs_filename)
             self.DANUBE_tables[table_name] = df
         return
     
-    # Generate DANUBE_extended database (one table form) from all separate tables
+    # Generate DANUBE_extended database containing all data joined from all separate tables (one consolidated table form)
     def DANUBE_generate_extended(self):
         ### Make join between tables using merges on rigth keys
         database_ref = self.DANUBE_tables['CATALOGUE']
@@ -116,25 +123,40 @@ class DANUBE_database:
         return
     
     # Export DANUBE Extended Database to CSV File (to temporary file)
-    def DANUBE_export_extended_database(self):
-        f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
-        f_name = f.name
+    def DANUBE_export_extended_database(self, f_name=''):
+        if ( f_name == ''): # Generate a temporary output file for CSV
+            f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
+            f_name = f.name
         print('Exporting DANUBE Extended Database to :'+ f_name)
-        self.DANUBE_database_extended.to_csv(f.name, sep=';', encoding='utf-8', index=False)
+        self.DANUBE_database_extended.to_csv(f_name, sep=',', encoding='utf-8', index=False)
         return f_name
     
-    # Generate DANUBE_generalized (généralized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
+    # Export DANUBE Generalized Database to CSV File (to temporary file)
+    def DANUBE_export_generalized_database(self, f_name=''):
+        if ( f_name == ''): # Generate a temporary output file for CSV
+            f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
+            f_name = f.name
+        print('Exporting DANUBE Extended Database to :'+ f_name)
+        self.DANUBE_database_generalized.to_csv(f_name, sep=',', encoding='utf-8', index=False)
+        return f_name
+
+    # Generate DANUBE generalized data version (defining an archetype for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
+    # Using generalization rules based on PERIOD, USAGE, TYPOLOGY, TERRITORY
     def DANUBE_generate_generalized(self):
-        self.DANUBE_database_generalizd = self.DANUBE_database_extended
+        ### TODO Uses rules - Currently using Extended Database
+        if self.DANUBE_database_extended.empty:
+            self.DANUBE_generate_extended()
+        self.DANUBE_database_generalized = self.DANUBE_database_extended
         return
     
-    def DANUBE_load_database(self,custom_db_path=''):
+    # Load DANUBE Database with all data and informations (Extended and Generalized data)
+    def DANUBE_load_database(self):
         # Read data from self.path
-        self.DANUBE_load_database_core(db_path)
+        self.DANUBE_load_database_core()
         # Generate DANUBE_extended (one table form)
-        self.DANUBE_generate_extended(self)
+        self.DANUBE_generate_extended()
         # Generate DANUBE_generalizd (Generalized version for all input values PERIOD, USAGE, TYPOLOGY, TERRITORY)
-        self.DANUBE_generate_generalized(self)
+        self.DANUBE_generate_generalized()
         return
     
     # Return DANUBE period from building's construction date
@@ -174,7 +196,7 @@ class DANUBE_database:
                     ### All other P2-P7 Territories
                     danube_territory = territoire['Terr_P2'].values[0]
             else:
-                print("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+                print("Warning: territory for Period ",  construction_period, ' and Location COMMUNE: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
              #  print('Error in DANUBE_get_territory: Territory\'s commune scale not yet implemented')
         else:
             print('Error in DANUBE_get_territory: ',scale,' scale is unknown... Returning default FRANCE territory.')
@@ -191,7 +213,7 @@ class DANUBE_database:
         archetype = danube_archetypes_all.loc[ (danube_archetypes_all['NOM_TYPOLOGIE'] == Nom_typologie) & (danube_archetypes_all['USAGE'] == Usage) &
             (danube_archetypes_all['NUMERO_PERIODE'] == periode) & (danube_archetypes_all['TERRITOIRE'] == territoire)]
         if not archetype.empty:
-            danube_archetype = archetype['NUMERO_TYPOLOGIE'].values[0]
+            danube_archetype = archetype['ID_ARCHETYPE'].values[0]
         else:
             print("Warning: Archetype for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
         return danube_archetype
@@ -203,7 +225,7 @@ class DANUBE_database:
         if danube_all_archetypes_info.empty:
             print('DANUBE extended database is empty. Cannot get informations for archetypes :' + id_archetype + '...')
             return infos
-        infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['NUMERO_TYPOLOGIE'] == id_archetype)]
+        infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['ID_ARCHETYPE'] == id_archetype)]
         if not infos_rows.empty:
             infos = infos_rows # Dataframe! Get individual values with column index. Ex: infos_rows['NUMERO_PERIODE'].values[0]
         else:
