@@ -23,12 +23,11 @@
 """
 
 __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
-__date__ = '2023-05-24'
+__date__ = '2023-06-15'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
-__version__ = 'v0.0.8'
+__version__ = 'v0.0.7'
 __all__ = [
-    'DANUBE_database',
 ]
 
-from .PyDANUBE import DANUBE_database
-#from . import DANUBE_database
+#from .DANUBE_constants import OUTPUT,FILOSOFI,GEOCLIMATE_INPUT_BUILDINGS_UTRF
+from .DANUBE_constants import OUTPUT,FILOSOFI,GEOCLIMATE_INPUT_BUILDINGS_UTRF

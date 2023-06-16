@@ -34,6 +34,7 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import inspect
+from pathlib import Path
 
 from qgis.core import QgsProcessingAlgorithm, QgsApplication
 from .DANUBE_tool_provider import DANUBEtoolProvider
@@ -44,9 +45,16 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 user_dirpath = QgsApplication.qgisSettingsDirPath() #'C:/Users/Username/AppData/Roaming/QGIS/QGIS3\\profiles\\default/'
-danube_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool')
+user_dirpath = Path(user_dirpath)
+#danube_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool')
+danube_dirpath =  str(Path(user_dirpath) / "python" / "plugins" / "Danube_Tool")
 if danube_dirpath not in sys.path:
     sys.path.append(danube_dirpath)
+
+#danube_preprocess_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool\DANUBE_preprocessing_tools')
+danube_preprocess_dirpath = str(Path(user_dirpath)  / "python" / "plugins" / "Danube_Tool" / "DANUBE_preprocessing_tools")
+if danube_preprocess_dirpath not in sys.path:
+    sys.path.append(danube_preprocess_dirpath)
 
 class DANUBEtoolPlugin(object):
 

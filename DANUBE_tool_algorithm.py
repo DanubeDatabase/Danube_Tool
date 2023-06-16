@@ -67,6 +67,9 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
     INPUT_BUILDINGS = 'INPUT_BUILDINGS'
     INPUT_PREPROCESSED = 'INPUT_PREPROCESSED'
     FILOSOFI = 'FILOSOFI'
+    
+    #from .DANUBE_constants import OUTPUT,INPUT,INPUT_BUILDINGS,INPUT_PREPROCESSED,FILOSOFI
+    #import DANUBE_constants
 
     def initAlgorithm(self, config):
         """
