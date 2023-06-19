@@ -43,9 +43,9 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber
                        )
 
-from .DANUBE_preprocessing_tools import danube_preprocess_launch
+from .DANUBE_preprocessing_tools import danube_preprocess_sample
 
-class DANUBEtool_preprocess(QgsProcessingAlgorithm):
+class DANUBEtool_preprocess_sample(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
     creates a new identical one.
@@ -172,7 +172,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # or output names.
         
         ###EN_COURS### Test calling external preprocess funtion
-        danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
+        danube_preprocess_sample.preprocess_function_sample(self, parameters, context, feedback)
         
         return {self.OUTPUT: dest_id}
 
@@ -184,7 +184,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         lowercase alphanumeric characters only and no spaces or other
         formatting characters.
         """
-        return 'Data preprocessing for DANUBE generation'
+        return 'Data preprocessing for DANUBE generation (DEV)'
 
     def displayName(self):
         """

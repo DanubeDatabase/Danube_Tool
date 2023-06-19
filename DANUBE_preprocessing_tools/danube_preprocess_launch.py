@@ -29,7 +29,7 @@ OUTPUT = 'OUTPUT'
 FILOSOFI = 'FILOSOFI'
 
 #### Sample preprocesss function
-def preprocess_function_sample(self, parameters, context, feedback):
+def preprocess_function_launch(self, parameters, context, feedback):
         #### 
         #source = self.parameterAsSource(parameters, GEOCLIMATE_INPUT_BUILDINGS_UTRF, context)
         #(sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,

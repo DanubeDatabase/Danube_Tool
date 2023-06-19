@@ -31,8 +31,9 @@ __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LI
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsProcessingProvider
-from .DANUBE_tool_preprocess import DANUBEtool_preprocess
 from .DANUBE_tool_algorithm import DANUBEtoolAlgorithm
+from .DANUBE_tool_preprocess import DANUBEtool_preprocess
+from .DANUBE_tool_preprocess_sample import DANUBEtool_preprocess_sample
 
 class DANUBEtoolProvider(QgsProcessingProvider):
 
@@ -55,6 +56,7 @@ class DANUBEtoolProvider(QgsProcessingProvider):
         """
         self.addAlgorithm(DANUBEtoolAlgorithm())
         self.addAlgorithm(DANUBEtool_preprocess())
+        self.addAlgorithm(DANUBEtool_preprocess_sample())
         # add additional algorithms here
         # self.addAlgorithm(MyOtherAlgorithm())
 
