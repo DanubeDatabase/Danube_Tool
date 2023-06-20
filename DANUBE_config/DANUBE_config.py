@@ -35,11 +35,11 @@ GEOCLIMATE_INPUT_BUILDINGS_UTRF = 'GEOCLIMATE_INPUT_BUILDINGS_UTRF'
 FILOSOFI = 'FILOSOFI'
 
 DANUBE_LAYERS = {
-    "DANUBE_TOPO_BATI" : { "id": "DANUBE_TOPO_BATI" , "file_id": "BATIMENT", "type" : "INPUT", "layer" : None },
-    "DANUBE_TOPO_ACTIVITE" : { "id": "DANUBE_TOPO_ACTIVITE", "file_id": "ZONE_D_ACTIVITE_OU_D_INTERET", "type" : "INPUT", "layer" : None } ,
-    "DANUBE_GEO_BUILD_RSU" : { "id": "GEO_BUILD_RSU", "file_id": "rsu_indicators", "type" : "INPUT", "layer" : None } ,
-    "DANUBE_GEO_BUILD_URTF" : { "id": "GEO_BUILD_URTF", "file_id": "building_utrf", "type" : "INPUT", "layer" : None } ,
-    "DANUBE_GEO_BUILD_IND" : { "id": "GEO_BUILD_IND", "file_id": "building", "type" : "INPUT", "layer" : None } ,
+    "TOPO_BATI" : { "id": "TOPO_BATI" , "file_id": "BATIMENT", "type" : "INPUT", "layer" : None },
+    "TOPO_ACTIVITE" : { "id": "TOPO_ACTIVITE", "file_id": "ZONE_D_ACTIVITE_OU_D_INTERET", "type" : "INPUT", "layer" : None } ,
+    "GEO_BUILD_RSU" : { "id": "GEO_BUILD_RSU", "file_id": "rsu_indicators", "type" : "INPUT", "layer" : None } ,
+    "GEO_BUILD_URTF" : { "id": "GEO_BUILD_URTF", "file_id": "building_utrf", "type" : "INPUT", "layer" : None } ,
+    "GEO_BUILD_IND" : { "id": "GEO_BUILD_IND", "file_id": "building", "type" : "INPUT", "layer" : None } ,
     "DANUBE_FILO" : { "id": "FILO", "file_id": "Filosofi2017_carreaux_nivNaturel_met", "type" : "INPUT", "layer" : None } ,
     "DANUBE_BUILD_PREPROCESS" : { "id": "DANUBE_BUILD_PREPROCESS", "file_id": "DANUBE_building_preprocessed", "type" : "OUTPUT", "layer" : None } ,
     "DANUBE_BUILD_DATA" : { "id": "DANUBE_BUILD_DATA", "file_id": "DANUBE_building_data", "type" : "OUTPUT", "layer" : None } ,

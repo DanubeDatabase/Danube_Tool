@@ -30,10 +30,14 @@ __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LI
 
 __revision__ = '$Format:%H$'
 
+import os
 from qgis.core import QgsProcessingProvider
+from qgis.PyQt.QtGui import QIcon
 from .DANUBE_tool_algorithm import DANUBEtoolAlgorithm
 from .DANUBE_tool_preprocess import DANUBEtool_preprocess
 from .DANUBE_tool_preprocess_sample import DANUBEtool_preprocess_sample
+
+DANUBE_toolPath = os.path.dirname(__file__)
 
 class DANUBEtoolProvider(QgsProcessingProvider):
 
@@ -82,7 +86,7 @@ class DANUBEtoolProvider(QgsProcessingProvider):
         Should return a QIcon which is used for your provider inside
         the Processing toolbox.
         """
-        return QgsProcessingProvider.icon(self)
+        return QIcon(os.path.join(DANUBE_toolPath, "Icons","DANUBE-icon.png"))
 
     def longName(self):
         """
