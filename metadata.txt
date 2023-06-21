@@ -6,7 +6,7 @@
 name=DANUBE-tool
 qgisMinimumVersion=3.16
 description=DANUBE Tool plugin allows you to generate spatialized buildings' material informations from DANUBE database and urban scale typomorphological informations (IGN BDTOPO data and Geoclimate tool's outputs)
-version=0.2.0b (2023-05-24)
+version=0.2.0d (2023-06-20)
 author=(C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J
 email=lra-tech@toulouse.archi.fr
 
@@ -20,14 +20,14 @@ repository=http://repo
 
 hasProcessingProvider=yes
 # Uncomment the following line and add your changelog:
-# changelog=
+# changelog= Danube_tool (v0.2.0d) - PyDANUBE (v0.0.7)
 
 # Tags are comma separated with spaces allowed
 tags=urban, architecture, building, typomorphology, materiality, renovation, modelling, environment, simulation
 
 homepage=http://homepage
 category=Analysis
-icon=icon.png
+icon=Icons/DANUBE-icon.png
 # experimental flag
 experimental=True
 
