@@ -41,7 +41,7 @@ DANUBE_LAYERS = {
     "GEO_BUILD_URTF" : { "id": "GEO_BUILD_URTF", "file_id": "building_utrf.geojson", "type" : "INPUT", "layer" : None } ,
     "GEO_ZONE" : { "id": "GEO_ZONE", "file_id": "zone.geoson", "type" : "INPUT", "layer" : None } ,
     "GEO_BUILD_IND" : { "id": "GEO_BUILD_IND", "file_id": "building_indicators.geojson", "type" : "INPUT", "layer" : None } ,
-    "DANUBE_FILO" : { "id": "FILO", "file_id": "Filosofi2017_carreaux_nivNaturel_met.shp", "type" : "INPUT", "layer" : None } ,
+    "FILOSOFI" : { "id": "FILOSOFI", "file_id": "Filosofi2017_carreaux_nivNaturel_met.shp", "type" : "INPUT", "layer" : None } ,
     "DANUBE_BUILD_PREPROCESS" : { "id": "DANUBE_BUILD_PREPROCESS", "file_id": "DANUBE_building_preprocessed.dpkg", "type" : "OUTPUT", "layer" : None } ,
     "DANUBE_BUILD_DATA" : { "id": "DANUBE_BUILD_DATA", "file_id": "DANUBE_building_data.dpkg", "type" : "OUTPUT", "layer" : None } ,
 }

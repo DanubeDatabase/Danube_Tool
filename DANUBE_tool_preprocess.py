@@ -30,6 +30,9 @@ __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LI
 
 __revision__ = '$Format:%H$'
 
+import os
+from pathlib import Path
+
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
                        QgsMessageLog,
@@ -43,7 +46,12 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber
                        )
 
-from .DANUBE_preprocessing_tools import danube_preprocess_launch
+### Import DANUBE layers definition
+try: DANUBE_LAYERS
+except NameError: from DANUBE_config import DANUBE_LAYERS
+
+from DANUBE_preprocessing_tools import danube_preprocess_launch
+from pt_basic_functions import open_layer, DEBUG
 
 class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     """
@@ -65,37 +73,57 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
 
     OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
+    GEO_INPUT_FOLDER = 'GEO_INPUT_FOLDER'
     GEOCLIMATE_INPUT_BUILDINGS_UTRF = 'GEOCLIMATE_INPUT_BUILDINGS_UTRF'
     BDTOPO_INPUT_BUILDINGS = 'BDTOPO_INPUT_BUILDINGS'
     BDTOPO_INPUT_ACTIVITIES = 'BDTOPO_INPUT_ACTIVITIES'
     FILOSOFI = 'FILOSOFI'
+    global DANUBE_LAYERS
 
     def initAlgorithm(self, config):
         """
         Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
-
+        
+        global DANUBE_LAYERS
         # Add the Geoclimate vector features source input folder. 
         self.addParameter(
             QgsProcessingParameterFile(
-                self.INPUT,
-                self.tr('Geoclimate Input layers folder'),
+                self.GEO_INPUT_FOLDER,
+                self.tr('Geoclimate Input layers folder (not used yet)'),
                 behavior=QgsProcessingParameterFile.Folder  
             )
         )
         
+        # Define Geoclimate Zone layer
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.GEOCLIMATE_INPUT_BUILDINGS_UTRF,
-                self.tr('Geoclimate Buildings layer'),
+                DANUBE_LAYERS["GEO_ZONE"]["id"],
+                self.tr('Geoclimate Zone input layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
         
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.BDTOPO_INPUT_BUILDINGS,
+                DANUBE_LAYERS["GEO_BUILD_URTF"]["id"],
+                self.tr('Geoclimate Buildings UTRF layer'),
+                [QgsProcessing.TypeVectorAnyGeometry]
+            )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"],
+                self.tr('Geoclimate RSU UTRF FLOOR AREA layer'),
+                [QgsProcessing.TypeVectorAnyGeometry]
+            )
+        )
+        
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                DANUBE_LAYERS["TOPO_BATI"]["id"],
                 self.tr('BDTOPO V3 Buildings layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
@@ -103,16 +131,17 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.BDTOPO_INPUT_ACTIVITIES,
-                self.tr('BDTOPO V3 Activities layer'),
+                DANUBE_LAYERS["TOPO_ACTIVITE"]["id"],
+                self.tr('BDTOPO V3 Activities and Interest Zones layer'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
         
         # Add the FILOSOFI vector features layer (INSEE data at grid format). 
+        ###TODO### Preload FILOSOFI layer with DANUBE embeded data layer
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.FILOSOFI,
+                DANUBE_LAYERS["FILOSOFI"]["id"],
                 self.tr('FILOSOFI Input layers'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
@@ -132,21 +161,34 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         """
         Here is where the processing itself takes place.
         """
-
+        global DANUBE_LAYERS ## Global layers definition
+        
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
-        source_folder = self.parameterAsFile(parameters, self.GEOCLIMATE_INPUT_BUILDINGS_UTRF, context)
-        source = self.parameterAsSource(parameters, self.GEOCLIMATE_INPUT_BUILDINGS_UTRF, context)
+        source_folder = self.parameterAsFile(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
+        source = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
         #print('Geoclimate Input layers folder:'+str(source_folder))
         #QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
         #Display Geoclimate folder path inputs
-        source_folder_path = self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
+        source_folder_path = self.parameterDefinition('GEO_INPUT_FOLDER').valueAsPythonString(parameters['GEO_INPUT_FOLDER'], context)
         QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
+        source_folder_path = Path(source_folder_path)
+
+        # Initialize DANUBE_LAYERS values with input layers
+        DANUBE_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)
+        DANUBE_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
+        DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
+        DANUBE_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
+        DANUBE_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
+        DANUBE_LAYERS["FILOSOFI"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["FILOSOFI"]["id"], context)
+        
+        if DEBUG: QgsMessageLog.logMessage('DANUBE_LAYERS:'+str(DANUBE_LAYERS), 'DANUBE tool', level=Qgis.Info)
+
 
         # Compute the number of steps to display within the progress bar and
         # get features from source

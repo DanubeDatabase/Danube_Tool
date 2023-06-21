@@ -37,7 +37,6 @@ import inspect
 from pathlib import Path
 
 from qgis.core import QgsProcessingAlgorithm, QgsApplication
-from .DANUBE_tool_provider import DANUBEtoolProvider
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 
@@ -56,8 +55,14 @@ danube_preprocess_dirpath = str(Path(user_dirpath)  / "python" / "plugins" / "Da
 if danube_preprocess_dirpath not in sys.path:
     sys.path.append(danube_preprocess_dirpath)
 
-class DANUBEtoolPlugin(object):
+from .DANUBE_tool_provider import DANUBEtoolProvider
+### Import DANUBE layers definition
+try: DANUBE_LAYERS
+except NameError: from DANUBE_config import DANUBE_LAYERS
 
+
+class DANUBEtoolPlugin(object):
+    global DANUBE_LAYERS
     def __init__(self):
         self.provider = None
 
