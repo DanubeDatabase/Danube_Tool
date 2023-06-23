@@ -22,7 +22,7 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-__author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
+__author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
 __date__ = '2023-06-20'
 __version__ = '0.2.0d'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'

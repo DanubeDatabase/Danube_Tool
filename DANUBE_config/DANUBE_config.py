@@ -23,7 +23,7 @@
 """
 __all__ = ["DANUBE_LAYERS"]
 
-__author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
+__author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
 __date__ = '2023-06-19'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 

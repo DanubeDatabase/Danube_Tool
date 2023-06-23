@@ -60,7 +60,7 @@ DEFAULT_DANUBE_DATA_TABLES = {
 
 class DANUBE_database:
     
-    __author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
+    __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
     __date__ = '2023-04-19'
     __version__ = '0.0.6'
     

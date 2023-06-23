@@ -22,7 +22,7 @@
  ***************************************************************************/
 """
 
-__author__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
+__author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
 __date__ = '2023-06-19'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
@@ -32,6 +32,7 @@ __revision__ = '$Format:%H$'
 
 import os
 from pathlib import Path
+import copy
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -47,8 +48,9 @@ from qgis.core import (Qgis,
                        )
 
 ### Import DANUBE layers definition
-try: DANUBE_LAYERS
-except NameError: from DANUBE_config import DANUBE_LAYERS
+#try: DANUBE_LAYERS
+#except NameError: from DANUBE_config import DANUBE_LAYERS
+from DANUBE_config import DANUBE_LAYERS
 
 from DANUBE_preprocessing_tools import danube_preprocess_launch
 from pt_basic_functions import open_layer, DEBUG
@@ -66,11 +68,11 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     All Processing algorithms should extend the QgsProcessingAlgorithm
     class.
     """
-
+    
     # Constants used to refer to parameters and outputs. They will be
     # used when calling the algorithm from another algorithm, or when
     # calling from the QGIS console.
-
+    
     OUTPUT = 'OUTPUT'
     INPUT = 'INPUT'
     GEO_INPUT_FOLDER = 'GEO_INPUT_FOLDER'
@@ -79,6 +81,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     BDTOPO_INPUT_ACTIVITIES = 'BDTOPO_INPUT_ACTIVITIES'
     FILOSOFI = 'FILOSOFI'
     global DANUBE_LAYERS
+    #DANUBE_tool_LAYERS = DANUBE_LAYERS
 
     def initAlgorithm(self, config):
         """
@@ -178,17 +181,21 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         source_folder_path = self.parameterDefinition('GEO_INPUT_FOLDER').valueAsPythonString(parameters['GEO_INPUT_FOLDER'], context)
         QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
         source_folder_path = Path(source_folder_path)
-
-        # Initialize DANUBE_LAYERS values with input layers
-        DANUBE_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)
-        DANUBE_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
-        DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
-        DANUBE_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
-        DANUBE_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
-        DANUBE_LAYERS["FILOSOFI"]["layer"] = self.parameterAsSource(parameters, DANUBE_LAYERS["FILOSOFI"]["id"], context)
+        # Add and initialize new DANUBE_tool_LAYERS attribute's values with input layers constants, using deepcopy !
+        setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
+        #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)
+        if DEBUG: QgsMessageLog.logMessage('GEO_ZONE layer from parameter:'+str(self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)), 'DANUBE tool', level=Qgis.Info)
+        #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsSource(parameters,"GEO_ZONE", context)
+        self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,"GEO_ZONE", context)
+        self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
+        self.DANUBE_tool_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
+        self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
+        self.DANUBE_tool_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
+        self.DANUBE_tool_LAYERS["FILOSOFI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["FILOSOFI"]["id"], context)
         
-        if DEBUG: QgsMessageLog.logMessage('DANUBE_LAYERS:'+str(DANUBE_LAYERS), 'DANUBE tool', level=Qgis.Info)
-
+        if DEBUG: QgsMessageLog.logMessage('DANUBE_LAYERS[GEO_ZONE]:'+str(DANUBE_LAYERS["GEO_ZONE"]), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('self.DANUBE_tool_LAYERS.[GEO_ZONE].source:'+str(self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('DANUBE_tool_LAYERS:'+str(self.DANUBE_tool_LAYERS), 'DANUBE tool', level=Qgis.Info)
 
         # Compute the number of steps to display within the progress bar and
         # get features from source
@@ -199,13 +206,10 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
             # Stop the algorithm if cancel button has been clicked
             if feedback.isCanceled():
                 break
-
             # Add a feature in the sink
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
-
             # Update the progress bar
             feedback.setProgress(int(current * total))
-
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
         # algorithms may return multiple feature sinks, calculated numeric
