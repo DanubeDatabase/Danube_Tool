@@ -7,7 +7,7 @@ from qgis.core import QgsVectorLayer, QgsProject
 
 SHOW_GUI_LAY = True  # if True add intermediate layers to QGIS GUI to check
 
-DEV_TEST = True  # if True, DANUBE_LAYERS is defined from local samples
+DEV_OUT_PLUGIN = True  # if True, DANUBE_LAYERS is defined from local samples
 # if False, if True, DANUBE_LAYERS is defined from the DANUBE_config file in the plugin
 
 SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the workflow;
@@ -167,7 +167,7 @@ def open_local_data_sample(small_sample):
     return DANUBE_LAYERS
 
 def define_danube_layer_source():
-    if DEV_TEST:
+    if DEV_OUT_PLUGIN:
         DANUBE_LAYERS = timed_execution_d(open_local_data_sample, SMALL_SAMPLE)
     else:
         from DANUBE_config import DANUBE_LAYERS

@@ -18,7 +18,7 @@ from data_consolidation.spatial_joins import main_dc_4
 # os.chmod(log_dir, 0o777)
 
 
-def main_dc_data_consolidation():
+def main_dc_data_consolidation(DANUBE_LAYERS):
     """provide all relevant variables to calculate Danube 4 inputs"""
     print("+" * 100)
     print("--------------- START DATA CONSOLIDATION -----------------")
@@ -46,22 +46,22 @@ def main_dc_data_consolidation():
         print_d("DANUBE_LAYERS.keys", DANUBE_LAYERS.keys())
         print_memory_use()
 
-    # comment the line below if want to keep the layers which will not be further used
-    delete_dc1_used_layers(DANUBE_LAYERS)
-    #
-    # # ____________________________________________________________________________________________________________
-    # # step 2  - create spatial index to optimize pp3 and pp4, which need spatial actions
-    # DANUBE_LAYERS = timed_execution_d(main_dc_2, DANUBE_LAYERS)
-    # print_memory_use()
-    # # ____________________________________________________________________________________________________________
-    # # step 3 - select zone by location
-    # DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)
-    # print_memory_use()
-    # # ____________________________________________________________________________________________________________
-    # # pp4 - join attributes from FILOSOFI and TOPO_ACTIVITE using spatial attributes
-    # DANUBE_LAYERS =  main_dc_4(DANUBE_LAYERS)
-    # print_memory_use()
-    # # ____________________________________________________________________________________________________________
+    # comment the line below if you want to keep the layers which will not be further used
+    # delete_dc1_used_layers(DANUBE_LAYERS)
+
+    # ____________________________________________________________________________________________________________
+    # step 2  - create spatial index to optimize pp3 and pp4, which need spatial actions
+    DANUBE_LAYERS = timed_execution_d(main_dc_2, DANUBE_LAYERS)
+    print_memory_use()
+    # ____________________________________________________________________________________________________________
+    # step 3 - select zone by location
+    DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)
+    print_memory_use()
+    # ____________________________________________________________________________________________________________
+    # pp4 - join attributes from FILOSOFI and TOPO_ACTIVITE using spatial attributes
+    DANUBE_LAYERS =  main_dc_4(DANUBE_LAYERS)
+    print_memory_use()
+    # ____________________________________________________________________________________________________________
 
     print("+" * 100)
     print("--------------- END DATA CONSOLIDATION -----------------")
@@ -71,4 +71,4 @@ def main_dc_data_consolidation():
 
 if __name__ == '__console__':
 
-    DANUBE_LAYERS = main_dc_data_consolidation()
+    DANUBE_LAYERS = main_dc_data_consolidation(DANUBE_LAYERS)
