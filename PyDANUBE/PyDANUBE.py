@@ -7,7 +7,7 @@
  DANUBE Database allows you to generate buildings' material informations from urban scale typomorphological informations (IGN BDTOPO and/or Geoclimate tool's outputs) 
         -------------------
         begin                : 2023-04-29
-        author               : Serge Faraut - LRA - ENSA Toulouse
+        author               : Serge Faraut, Lorena de Carvalho Araujo - LRA - ENSA Toulouse
         copyright            : (C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J
         email                : lra-tech@toulouse.archi.fr
  ***************************************************************************/
@@ -60,7 +60,7 @@ DEFAULT_DANUBE_DATA_TABLES = {
 
 class DANUBE_database:
     
-    __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
+    __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
     __date__ = '2023-04-19'
     __version__ = '0.0.6'
     
