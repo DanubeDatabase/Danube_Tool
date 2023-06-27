@@ -54,6 +54,7 @@ from DANUBE_config import DANUBE_LAYERS
 
 from DANUBE_preprocessing_tools import danube_preprocess_launch
 
+
 class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     """
     This is an example algorithm that takes a vector layer and
@@ -184,8 +185,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
         #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)
         if DEBUG: QgsMessageLog.logMessage('GEO_ZONE layer from parameter:'+str(self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)), 'DANUBE tool', level=Qgis.Info)
-        #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsSource(parameters,"GEO_ZONE", context)
-        self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,"GEO_ZONE", context)
+        self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,DANUBE_LAYERS["GEO_ZONE"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
@@ -215,10 +215,17 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
+<<<<<<< HEAD
 
         ###EN_COURS### Test calling external preprocess funtion
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
 
+=======
+        
+        # Call external preprocess funtion (preprocess folder)
+        danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
+        # Must return result layer(s)
+>>>>>>> 5423dfc4d21d637f0ab3a6cb5de7f07957243ab5
         return {self.OUTPUT: dest_id}
 
     def name(self):

@@ -30,5 +30,6 @@ __all__ = [
 ]
 
 #from .DANUBE_constants import OUTPUT,FILOSOFI,GEOCLIMATE_INPUT_BUILDINGS_UTRF
+from .DANUBE_config import DEBUG
 from .DANUBE_config import OUTPUT,FILOSOFI,GEOCLIMATE_INPUT_BUILDINGS_UTRF
 from .DANUBE_config import DANUBE_LAYERS
