@@ -53,7 +53,7 @@ from qgis.core import (Qgis,
 from DANUBE_config import DANUBE_LAYERS
 
 from DANUBE_preprocessing_tools import danube_preprocess_launch
-from pt_basic_functions import open_layer, DEBUG
+#from pt_basic_functions import open_layer, DEBUG
 
 class DANUBEtool_preprocess(QgsProcessingAlgorithm):
     """
@@ -185,8 +185,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
         #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)
         if DEBUG: QgsMessageLog.logMessage('GEO_ZONE layer from parameter:'+str(self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)), 'DANUBE tool', level=Qgis.Info)
-        #self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsSource(parameters,"GEO_ZONE", context)
-        self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,"GEO_ZONE", context)
+        self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,DANUBE_LAYERS["GEO_ZONE"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
@@ -217,9 +216,9 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
         
-        ###EN_COURS### Test calling external preprocess funtion
+        # Call external preprocess funtion (preprocess folder)
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
-        
+        # Must return result layer(s)
         return {self.OUTPUT: dest_id}
 
     def name(self):
