@@ -1,4 +1,4 @@
-from dev_set_test import timed_execution_d
+from dev_set_test import DANUBE_LAYERS, timed_execution_d
 
 from data_consolidation.main_data_consolidation import main_dc_data_consolidation
 from category_mapping.main_category_mapping import main_cm_category_mapping

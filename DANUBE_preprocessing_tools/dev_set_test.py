@@ -5,9 +5,8 @@ from qgis.core import QgsVectorLayer, QgsProject
 
 # ___________________Define variables of test and debug to run the workflow___________________
 
-SHOW_GUI_LAY = True  # if True add intermediate layers to QGIS GUI to check
 
-DEV_OUT_PLUGIN = True  # if True, DANUBE_LAYERS is defined from local samples
+DEV_OUT_PLUGIN = False  # if True, DANUBE_LAYERS is defined from local samples
 # if False, if True, DANUBE_LAYERS is defined from the DANUBE_config file in the plugin
 
 SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the workflow;
@@ -15,7 +14,9 @@ SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the 
 
 DEBUG_PRINT = True  # if True, print in the console steps of the process
 
-TIME_MEMORY = True  # import module (to be installed first) which allows showing memory use
+SHOW_GUI_LAY = True  # if True add intermediate layers to QGIS GUI to check
+
+TIME_MEMORY = False  # import module (to be installed first) which allows showing memory use
 
 
 # ___________________Functions in developing and debug mode___________________
@@ -46,12 +47,11 @@ def timed_execution_d(func, *args, **kwargs):
 
 if TIME_MEMORY:
     import psutil
-
 def print_memory_use():
     """Print memory use if the 'time_memory' variable is True"""
     if TIME_MEMORY:
-        print('RAM memory % used:', psutil.virtual_memory()[2])
-        print('RAM Used (GB):', psutil.virtual_memory()[3] / 1000000000)
+        print('psutil RAM memory % used:', psutil.virtual_memory()[2])
+        print('psutil RAM Used (GB):', psutil.virtual_memory()[3] / 1000000000)
     else:
         pass
 
