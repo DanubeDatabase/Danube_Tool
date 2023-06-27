@@ -164,7 +164,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # algorithm is run in QGIS).
         self.addParameter(
             QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
+                DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
                 self.tr('Pre-processed Data Output layer')
             )
         )
@@ -181,7 +181,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         #source = self.parameterAsSource(parameters, self.INPUT, context)
         source_folder = self.parameterAsFile(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         source = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
+        (sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
         #print('Geoclimate Input layers folder:'+str(source_folder))
@@ -209,7 +209,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # Compute the number of steps to display within the progress bar and
         # get features from source
         total = 100.0 / source.featureCount() if source.featureCount() else 0
-
+        """
         features = source.getFeatures()
         for current, feature in enumerate(features):
             # Stop the algorithm if cancel button has been clicked
@@ -219,17 +219,17 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
             sink.addFeature(feature, QgsFeatureSink.FastInsert)
             # Update the progress bar
             feedback.setProgress(int(current * total))
+        """
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
         # algorithms may return multiple feature sinks, calculated numeric
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
-
         # Call external preprocess funtion (preprocess folder)
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
         # Must return result layer(s)
-        return {self.OUTPUT: dest_id}
+        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"]: dest_id}
 
     def name(self):
         """
