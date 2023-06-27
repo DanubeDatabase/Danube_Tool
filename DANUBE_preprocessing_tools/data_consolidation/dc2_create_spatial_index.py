@@ -4,7 +4,7 @@ from qgis.core import (
                         QgsProcessing
                       )
 
-from dev_set_test import DEV_OUTSIDE_PLUGIN, print_d, open_layer, add_layer_gui
+from dev_set_test import print_d, open_layer, add_layer_gui
 
 def geoclimate_to_gpkg(DANUBE_LAYERS):
     """ save layer as gpkg in the temporary memory and open this layer"""
@@ -82,10 +82,9 @@ def main_dc_2(DANUBE_LAYERS):
 
     add_layer_gui(DANUBE_LAYERS['GEO_ZONE']['layer'], 'GEO_ZONE')
 
-    if not DEV_OUTSIDE_PLUGIN:
-        city_id =  [feature['ID_ZONE'] for feature in DANUBE_LAYERS['GEO_ZONE']['layer'].getFeatures()][0]
-        print_d('_' * 21, 'city_id', '_' * 21, '\n')
-        print_d(city_id)
+    city_id =  [feature['ID_ZONE'] for feature in DANUBE_LAYERS['GEO_ZONE']['layer'].getFeatures()][0]
+    print_d('_' * 21, 'city_id', '_' * 21, '\n')
+    print_d(city_id)
 
     return DANUBE_LAYERS
 

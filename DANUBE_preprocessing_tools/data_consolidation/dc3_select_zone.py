@@ -1,6 +1,6 @@
 import processing
 
-from dev_set_test import DEV_OUTSIDE_PLUGIN, add_layer_gui, print_d, print_fields_d
+from dev_set_test import add_layer_gui, print_d, print_fields_d
 
 
 def main_dc_3(DANUBE_LAYERS):
@@ -40,13 +40,10 @@ def main_dc_3(DANUBE_LAYERS):
 
 if __name__ == '__console__':
 
-    if DEV_OUTSIDE_PLUGIN:
-        from dev_set_test import DANUBE_LAYERS
+    from dev_set_test import DANUBE_LAYERS
 
-        DANUBE_LAYERS = main_dc_2(DANUBE_LAYERS)
-        DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)
+    DANUBE_LAYERS = main_dc_2(DANUBE_LAYERS)
+    DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)
 
-    else:
-        pass
 
 

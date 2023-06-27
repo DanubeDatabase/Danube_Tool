@@ -5,10 +5,6 @@ from qgis.core import QgsVectorLayer, QgsProject
 
 # ___________________Define variables of test and debug to run the workflow___________________
 
-
-DEV_OUTSIDE_PLUGIN = False  # if True, DANUBE_LAYERS is defined from local samples
-# if False, if True, DANUBE_LAYERS is defined directly from the plugin
-
 SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the workflow;
 # if False, it uses local data from Haute-Garonne and Toulouse to test the workflow.
 
