@@ -50,7 +50,7 @@ from qgis.core import (Qgis,
 ### Import DANUBE layers definition
 #try: DANUBE_LAYERS
 #except NameError: from DANUBE_config import DANUBE_LAYERS
-from DANUBE_config import DANUBE_LAYERS
+from DANUBE_config import DANUBE_LAYERS, DEBUG
 
 from DANUBE_preprocessing_tools import danube_preprocess_launch
 
@@ -215,17 +215,10 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
-<<<<<<< HEAD
 
-        ###EN_COURS### Test calling external preprocess funtion
-        danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
-
-=======
-        
         # Call external preprocess funtion (preprocess folder)
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
         # Must return result layer(s)
->>>>>>> 5423dfc4d21d637f0ab3a6cb5de7f07957243ab5
         return {self.OUTPUT: dest_id}
 
     def name(self):
