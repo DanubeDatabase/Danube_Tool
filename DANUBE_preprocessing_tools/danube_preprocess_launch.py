@@ -24,7 +24,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterFeatureSink)
 
-from DANUBE_preprocessing_tools.data_consolidation.main_data_consolidation import main_dc_data_consolidation_plugin
+from main_preprocess import main_preprocess_all_plugin
 
 
 GEOCLIMATE_INPUT_BUILDINGS_UTRF = 'GEOCLIMATE_INPUT_BUILDINGS_UTRF'
