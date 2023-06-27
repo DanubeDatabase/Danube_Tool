@@ -5,11 +5,11 @@ from qgis.core import Qgis, QgsMessageLog, QgsVectorLayer, QgsProject
 
 # ___________________Define variables of test and debug to run the workflow___________________
 
-PRINT_LOG = True  # if True, print in the console steps of the process
+PRINT_LOG = True  # if True, print in the console steps of the process and show them in the logging INFO
 
 SHOW_GUI_LAY = True  # if True add intermediate layers to QGIS GUI to check
 
-TIME_MEMORY = False  # import module (to be installed first) which allows showing memory use
+SHOW_MEMORY = False  # import module (to be installed first) which allows showing memory use
 
 
 # ___________________Functions in developing and debug mode___________________
@@ -41,11 +41,11 @@ def timed_execution(func, *args, **kwargs):
     return result
 
 
-if TIME_MEMORY:
+if SHOW_MEMORY:
     import psutil
 def print_memory_use():
     """Print memory use if the 'time_memory' variable is True"""
-    if TIME_MEMORY:
+    if SHOW_MEMORY:
         print_log('psutil RAM memory % used:', psutil.virtual_memory()[2])
         print_log('psutil RAM Used (GB):', psutil.virtual_memory()[3] / 1000000000)
     else:
