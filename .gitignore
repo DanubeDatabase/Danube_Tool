@@ -1,6 +1,12 @@
 **/__pycache__
 **/.idea
 **/.gpkg
+**/DANUBE_preprocessing_tools/sample_data_to_test/
 
 DANUBE_preprocessing_tools/dev_addsys.py
 DANUBE_preprocessing_tools/dev_reload.py
+DANUBE_preprocessing_tools/dev_test_preprocess.py
+DANUBE_preprocessing_tools/category_mapping/*.csv
+DANUBE_preprocessing_tools/sample_data_to_test/*.gpkg
+DANUBE_preprocessing_tools/sample_data_to_test/*
+DANUBE_preprocessing_tools/sample_data_to_test/
