@@ -25,7 +25,7 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFeatureSink)
 
 from main_preprocess import main_preprocess_all_plugin
-
+from DANUBE_config import DEBUG
 
 GEOCLIMATE_INPUT_BUILDINGS_UTRF = 'GEOCLIMATE_INPUT_BUILDINGS_UTRF'
 OUTPUT = 'OUTPUT'
@@ -45,7 +45,7 @@ def preprocess_function_launch(self, parameters, context, feedback):
         #QgsMessageLog.logMessage('Geoclimate Building UTRF layer (in preprocess_function_sample()) :'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
         #QgsMessageLog.logMessage('Geoclimate Building UTRF layer id (in preprocess_function_sample()) :'+str(DANUBE_LAYERS["GEO_BUILD_URTF"]["id"]), 'DANUBE tool', level=Qgis.Info)
         # if DEBUG: QgsMessageLog.logMessage('In preprocess_lauch: DANUBE_Layers='+str(self.DANUBE_tool_LAYERS), 'DANUBE tool', level=Qgis.Info)
-        # if DEBUG: QgsMessageLog.logMessage('    self.DANUBE_tool_LAYERS.[GEO_ZONE].source:'+str(self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('    self.DANUBE_tool_LAYERS.[GEO_ZONE].source:'+str(self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
         main_preprocess_all_plugin(self, parameters, context, feedback)
 
         return

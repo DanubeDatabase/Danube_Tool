@@ -6,8 +6,8 @@ from qgis.core import QgsVectorLayer, QgsProject
 # ___________________Define variables of test and debug to run the workflow___________________
 
 
-DEV_OUT_PLUGIN = False  # if True, DANUBE_LAYERS is defined from local samples
-# if False, if True, DANUBE_LAYERS is defined from the DANUBE_config file in the plugin
+DEV_OUTSIDE_PLUGIN = False  # if True, DANUBE_LAYERS is defined from local samples
+# if False, if True, DANUBE_LAYERS is defined directly from the plugin
 
 SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the workflow;
 # if False, it uses local data from Haute-Garonne and Toulouse to test the workflow.
@@ -166,14 +166,7 @@ def open_local_data_sample(small_sample):
 
     return DANUBE_LAYERS
 
-def define_danube_layer_source():
-    if DEV_OUT_PLUGIN:
-        DANUBE_LAYERS = timed_execution_d(open_local_data_sample, SMALL_SAMPLE)
-    else:
-        from DANUBE_config import DANUBE_LAYERS
-    return DANUBE_LAYERS
 
-DANUBE_LAYERS = define_danube_layer_source()
 
 if __name__ == '__console__':
     def test_open_layer():
