@@ -1,6 +1,6 @@
 import processing
 
-from dev_set_test import print_d, print_fields_d, add_layer_gui
+from config_show import print_log, print_fields, add_layer_gui
 
 
 def join_topo_activite(DANUBE_LAYERS):
@@ -40,26 +40,26 @@ def join_topo_activite(DANUBE_LAYERS):
 
 def main_topo_activ(DANUBE_LAYERS):
     """Perform spatial operations"""
-    print("*" * 100)
-    print("Run step 4 of data consolidation : Spatially join TOPO_ACTIVITE and FILOSOFI to the building layer")
-    print("*" * 100)
+    print_log("*" * 100)
+    print_log("Run step 4 of data consolidation : Spatially join TOPO_ACTIVITE to the building layer")
+    print_log("*" * 100)
 
-    print_d("Before filter 'FICTIF', field values:")
-    print_d(DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].uniqueValues(
+    print_log("Before filter 'FICTIF', field values:")
+    print_log(DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].uniqueValues(
         DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].fields().indexFromName('FICTIF')))
 
-    print_d("\nDANUBE_BUILD_PREPROCESS fields before join with TOPO_ACTIVITE")
-    print_fields_d(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
+    print_log("\nDANUBE_BUILD_PREPROCESS fields before join with TOPO_ACTIVITE")
+    print_fields(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
 
     #  run function
     join_topo_activite(DANUBE_LAYERS)
 
-    print_d("After filter 'FICTIF', field values:")
-    print_d(DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].uniqueValues(
+    print_log("After filter 'FICTIF', field values:")
+    print_log(DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].uniqueValues(
         DANUBE_LAYERS['TOPO_ACTIVITE']['layer'].fields().indexFromName('FICTIF')))
 
-    print_d("DANUBE_BUILD_PREPROCESS fields after join with TOPO_ACTIVITE")
-    print_fields_d(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
+    print_log("DANUBE_BUILD_PREPROCESS fields after join with TOPO_ACTIVITE")
+    print_fields(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
     add_layer_gui(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'], 'DANUBE_BUILD_PREPROCESS_dc4_joined_topo_activ')
 
     return DANUBE_LAYERS

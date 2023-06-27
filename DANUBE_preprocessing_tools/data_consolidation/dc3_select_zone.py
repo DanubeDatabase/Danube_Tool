@@ -1,18 +1,18 @@
 import processing
 
-from dev_set_test import add_layer_gui, print_d, print_fields_d
+from config_show import add_layer_gui, print_log, print_fields
 
 
 def main_dc_3(DANUBE_LAYERS):
     """Select the studied zone from 'TOPO_ACTIVITE' and 'FILOSOFI' layers to optimize the further spatial joins """
-    print("*" * 100)
-    print("Run step 3 of data consolidation : reduce size of data to the perimeters of the GEO_ZONE")
-    print("*" * 100)
+    print_log("*" * 100)
+    print_log("Run step 3 of data consolidation : reduce size of data to the perimeters of the GEO_ZONE")
+    print_log("*" * 100)
 
     # create spatial index to the layers which will be further used
     to_reduce = ['TOPO_ACTIVITE', 'FILOSOFI']
     for lay_name in to_reduce:
-        print_d(lay_name)
+        print_log(lay_name)
         add_layer_gui(DANUBE_LAYERS[lay_name]['layer'], lay_name + '_dc3_before_zone_selection')
 
         output_extracted = processing.run("native:extractbylocation",
@@ -23,7 +23,7 @@ def main_dc_3(DANUBE_LAYERS):
 
         DANUBE_LAYERS[lay_name]['layer'] = output_extracted
 
-        print_fields_d(output_extracted)
+        print_fields(output_extracted)
 
 
 
@@ -40,7 +40,7 @@ def main_dc_3(DANUBE_LAYERS):
 
 if __name__ == '__console__':
 
-    from dev_set_test import DANUBE_LAYERS
+    from config_show import DANUBE_LAYERS
 
     DANUBE_LAYERS = main_dc_2(DANUBE_LAYERS)
     DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)

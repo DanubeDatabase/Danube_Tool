@@ -7,6 +7,8 @@ from PyQt5.QtCore import QVariant
 import pandas as pd
 import processing
 
+from config_show import print_log
+
 
 
 
@@ -159,11 +161,11 @@ def usage_from_topo(bati, activ):
 
 
 def main_cm_usage():
-    print("*" * 100)
-    print("Run category_mapping - main_cm_usage : mapping Danube usage")
-    print("*" * 100)
+    print_log("*" * 100)
+    print_log("Run category_mapping - main_cm_usage : mapping Danube usage")
+    print_log("*" * 100)
 
-    print('TODO')
+    print_log('TODO')
 
     #
     #

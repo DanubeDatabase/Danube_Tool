@@ -1,8 +1,8 @@
-from dev_set_test import print_d
+from config_show import print_log
 
 def main_arch():
-    print("+" * 100)
-    print("Run archetype_definition : Archetype definition")
-    print("+" * 100)
+    print_log("+" * 100)
+    print_log("Run archetype_definition : Archetype definition")
+    print_log("+" * 100)
 
-    print('TODO')
+    print_log('TODO')

@@ -1,15 +1,16 @@
 import processing
 from qgis.core import QgsProcessing
 
-from dev_set_test import print_d, print_fields_d, add_layer_gui
+from config_show import print_log, print_fields, add_layer_gui
 
 def add_filo_dens_pop(DANUBE_LAYERS):
-    print_d("\n ______Run function filosofi dens_pop______\n")
-
+    print_log("*" * 100)
+    print_log("Run step 5 of data consolidation : Spatially join FILOSOFI to the building layer and calculate populational density")
+    print_log("*" * 100)
     outputs = {}
 
 
-    print_d("\n ______Centroids of DANUBE_BUILD_PREPROCESS______\n")
+    print_log("\n ______Centroids of DANUBE_BUILD_PREPROCESS______\n")
     # Centroids
     alg_params = {
         'ALL_PARTS': False,
@@ -19,7 +20,7 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     outputs['Centroids'] = processing.run('native:centroids', alg_params)
 
 
-    print_d("\n ______Join attributes by location (summary) - floor area______\n")
+    print_log("\n ______Join attributes by location (summary) - floor area______\n")
     # Join attributes by location (summary) - floor area
     alg_params = {
         'DISCARD_NONMATCHING': False,
@@ -33,7 +34,7 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     outputs['JoinAttributesByLocationSummaryFloorArea'] = processing.run('qgis:joinbylocationsummary', alg_params)
 
 
-    print_d("\n ______Field calculator - dens_pop______\n")
+    print_log("\n ______Field calculator - dens_pop______\n")
     # Field calculator - dens_pop
     alg_params = {
         'FIELD_LENGTH': 10,
@@ -46,10 +47,10 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     }
     outputs['FieldCalculatorDens_pop'] = processing.run('native:fieldcalculator', alg_params)
 
-    print_d("Fields after run FieldCalculatorDens_pop")
-    print_fields_d(outputs['FieldCalculatorDens_pop']['OUTPUT'])
+    print_log("Fields after run FieldCalculatorDens_pop")
+    print_fields(outputs['FieldCalculatorDens_pop']['OUTPUT'])
 
-    print_d("\n ______Join attributes by location _ filosofi squares into centroids______ \n")
+    print_log("\n ______Join attributes by location _ filosofi squares into centroids______ \n")
 
     fields_filo_to_join = ['Log_av45', 'Log_45_70', 'Log_70_90', 'Log_ap90', 'Log_inc']
 
@@ -79,15 +80,15 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     }
     outputs['JoinAttributesByLocation_SquaresIntoCentroids_2'] = processing.run('native:joinattributesbylocation', alg_params)
 
-    print_d("Fields after run JoinAttributesByLocation_SquaresIntoCentroids")
-    print_fields_d(outputs['JoinAttributesByLocation_SquaresIntoCentroids_2']['OUTPUT'])
+    print_log("Fields after run JoinAttributesByLocation_SquaresIntoCentroids")
+    print_fields(outputs['JoinAttributesByLocation_SquaresIntoCentroids_2']['OUTPUT'])
 
     fields_filo_to_join = ["filo_" + elem for elem in fields_filo_to_join]
     fields_filo_to_join.append('dens_pop')
 
     print(fields_filo_to_join)
 
-    print_d("\n ______Join attributes by field value - centroids and buildings______\n")
+    print_log("\n ______Join attributes by field value - centroids and buildings______\n")
     # Join attributes by field value - centroids and buildings
     alg_params = {
         'DISCARD_NONMATCHING': False,
@@ -105,8 +106,8 @@ def add_filo_dens_pop(DANUBE_LAYERS):
 
     DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'] = outputs['Building_with_filo_dens_pop']['OUTPUT']
 
-    print_d("\nAfter join dens pop - DANUBE_BUILD_PREPROCESS fields")
-    print_fields_d(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
+    print_log("\nAfter join dens pop - DANUBE_BUILD_PREPROCESS fields")
+    print_fields(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
     add_layer_gui(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'], 'DANUBE_BUILD_PREPROCESS_dc5_filo_dens_pop')
 
     return DANUBE_LAYERS

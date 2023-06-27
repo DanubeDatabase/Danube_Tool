@@ -1,10 +1,10 @@
 import pandas as pd
 
-from dev_set_test import print_d
+from config_show import print_log
 
 def main_cm_period():
-    print("*" * 100)
-    print("Run category_mapping - main_cm_period : mapping Danube period")
-    print("*" * 100)
+    print_log("*" * 100)
+    print_log("Run category_mapping - main_cm_period : mapping Danube period")
+    print_log("*" * 100)
 
-    print('TODO')
+    print_log('TODO')
