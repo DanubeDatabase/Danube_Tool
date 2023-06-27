@@ -108,6 +108,15 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
             )
         )
 
+       # Define Geoclimate Building Indicators
+        self.addParameter(
+            QgsProcessingParameterFeatureSource(
+                DANUBE_LAYERS["GEO_BUILD_IND"]["id"],
+                self.tr('Geoclimate Building Indicators input layer'),
+                [QgsProcessing.TypeVectorAnyGeometry]
+            )
+        )
+
         self.addParameter(
             QgsProcessingParameterFeatureSource(
                 DANUBE_LAYERS["GEO_BUILD_URTF"]["id"],
@@ -187,6 +196,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         if DEBUG: QgsMessageLog.logMessage('GEO_ZONE layer from parameter:'+str(self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_ZONE"]["id"], context)), 'DANUBE tool', level=Qgis.Info)
         self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"] = self.parameterAsVectorLayer(parameters,DANUBE_LAYERS["GEO_ZONE"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
+        self.DANUBE_tool_LAYERS["GEO_BUILD_IND"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_BUILD_IND"]["id"], context)
         self.DANUBE_tool_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["GEO_RSU_UTRF_FLOOR_AREA"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
