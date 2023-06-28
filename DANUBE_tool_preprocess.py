@@ -44,8 +44,13 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterNumber
+                       QgsProcessingParameterNumber,
+                       QgsProcessingMultiStepFeedback,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterDefinition,
                        )
+### Import processing (QGIS >= 3.4) - For QGIS < 3.4 : from qgis import processing
+import processing
 
 ### Import DANUBE layers definition
 #try: DANUBE_LAYERS
@@ -159,11 +164,11 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
             )
         )
 
-        # We add a feature sink in which to store our processed features (this
+        # We add a Vector layer in which to store our processed features (this
         # usually takes the form of a newly created vector layer when the
         # algorithm is run in QGIS).
         self.addParameter(
-            QgsProcessingParameterFeatureSink(
+            QgsProcessingParameterVectorDestination(
                 DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
                 self.tr('Pre-processed Data Output layer')
             )
@@ -181,6 +186,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         #source = self.parameterAsSource(parameters, self.INPUT, context)
         source_folder = self.parameterAsFile(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         source = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
+        ### Create a sink layer with same property as GEO_BUILD_URTF layer
         (sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
@@ -201,15 +207,19 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
         self.DANUBE_tool_LAYERS["FILOSOFI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["FILOSOFI"]["id"], context)
+        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = self.parameterAsOutputLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        #self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = sink
 
         if DEBUG: QgsMessageLog.logMessage('DANUBE_LAYERS[GEO_ZONE]:'+str(DANUBE_LAYERS["GEO_ZONE"]), 'DANUBE tool', level=Qgis.Info)
         if DEBUG: QgsMessageLog.logMessage('self.DANUBE_tool_LAYERS.[GEO_ZONE].source:'+str(self.DANUBE_tool_LAYERS["GEO_ZONE"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
-        if DEBUG: QgsMessageLog.logMessage('DANUBE_tool_LAYERS:'+str(self.DANUBE_tool_LAYERS), 'DANUBE tool', level=Qgis.Info)
+        #if DEBUG: QgsMessageLog.logMessage('DANUBE_tool_LAYERS:'+str(self.DANUBE_tool_LAYERS), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('self.DANUBE_tool_LAYERS.[DANUBE_BUILD_PREPROCESS].source:'+str(self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]), 'DANUBE tool', level=Qgis.Info)
 
+        """
         # Compute the number of steps to display within the progress bar and
         # get features from source
         total = 100.0 / source.featureCount() if source.featureCount() else 0
-        """
+
         features = source.getFeatures()
         for current, feature in enumerate(features):
             # Stop the algorithm if cancel button has been clicked
@@ -229,6 +239,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # Call external preprocess funtion (preprocess folder)
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
         # Must return result layer(s)
+        feedback.pushInfo("Done with processing.")
         return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"]: dest_id}
 
     def name(self):
