@@ -82,10 +82,6 @@ def main_dc_2(DANUBE_LAYERS):
 
     add_layer_gui(DANUBE_LAYERS['GEO_ZONE']['layer'], 'GEO_ZONE')
 
-    city_id =  [feature['ID_ZONE'] for feature in DANUBE_LAYERS['GEO_ZONE']['layer'].getFeatures()][0]
-    print_log('_' * 21, 'city_id', '_' * 21, '\n')
-    print_log(city_id)
-
     return DANUBE_LAYERS
 
 if __name__ == '__console__':

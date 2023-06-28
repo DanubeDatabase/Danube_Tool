@@ -1,7 +1,7 @@
 from config_show import timed_execution, print_log
 
-from data_consolidation.main_data_consolidation import main_dc_data_consolidation
-from category_mapping.main_category_mapping import main_cm_category_mapping
+from data_consolidation.main import main_dc_data_consolidation
+from category_mapping.main import main_cm_category_mapping
 from archetype_definition.danube_archetype import main_arch
 
 
@@ -11,8 +11,11 @@ def main_preprocess_all(DANUBE_LAYERS):
     print_log("#" * 100)
 
     DANUBE_LAYERS = timed_execution(main_dc_data_consolidation, DANUBE_LAYERS)
-    timed_execution(main_cm_category_mapping, DANUBE_LAYERS)
-    timed_execution(main_arch)
+
+    df = timed_execution(main_cm_category_mapping, DANUBE_LAYERS)
+
+    layer_arch  = timed_execution(main_arch, df, DANUBE_LAYERS)
+    # DANUBE_LAYERS['DANUBE_BUILD_DATA']['layer'] = layer_arch
 
     print_log("#" * 100)
     print_log("--------------- END DANUBE PREPROCESSING -----------------")

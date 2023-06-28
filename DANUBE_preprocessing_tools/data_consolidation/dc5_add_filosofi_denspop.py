@@ -52,7 +52,7 @@ def add_filo_dens_pop(DANUBE_LAYERS):
 
     print_log("\n ______Join attributes by location _ filosofi squares into centroids______ \n")
 
-    fields_filo_to_join = ['Log_av45', 'Log_45_70', 'Log_70_90', 'Log_ap90', 'Log_inc']
+    fields_filo_to_join = ['Idcar_nat','Log_av45', 'Log_45_70', 'Log_70_90', 'Log_ap90', 'Log_inc']
 
     # Join attributes by location _ just the pure data from filosofi
     alg_params = {

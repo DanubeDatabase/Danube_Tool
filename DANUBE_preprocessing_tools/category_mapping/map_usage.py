@@ -160,7 +160,7 @@ def usage_from_topo(bati, activ):
     return layer
 
 
-def main_cm_usage():
+def main_cm_usage(df):
     print_log("*" * 100)
     print_log("Run category_mapping - main_cm_usage : mapping Danube usage")
     print_log("*" * 100)
