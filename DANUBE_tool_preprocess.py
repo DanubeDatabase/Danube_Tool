@@ -207,7 +207,8 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         self.DANUBE_tool_LAYERS["TOPO_BATI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_BATI"]["id"], context)
         self.DANUBE_tool_LAYERS["TOPO_ACTIVITE"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["TOPO_ACTIVITE"]["id"], context)
         self.DANUBE_tool_LAYERS["FILOSOFI"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["FILOSOFI"]["id"], context)
-        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = self.parameterAsOutputLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        output_data_layer = self.parameterAsOutputLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = output_data_layer
         #self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = sink
 
         if DEBUG: QgsMessageLog.logMessage('DANUBE_LAYERS[GEO_ZONE]:'+str(DANUBE_LAYERS["GEO_ZONE"]), 'DANUBE tool', level=Qgis.Info)
@@ -240,7 +241,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
         # Must return result layer(s)
         feedback.pushInfo("Done with processing.")
-        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"]: dest_id}
+        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"]: self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]}
 
     def name(self):
         """
