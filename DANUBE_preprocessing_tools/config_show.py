@@ -47,17 +47,17 @@ def timed_execution(func, *args, **kwargs):
     return result
 
 
-memory_exists = True
+MEMORY_EXISTS = True
 try:
     import psutil
 except ImportError:
-    memory_exists = False
+    MEMORY_EXISTS = False
 
 
 def print_memory_use():
     """Print memory use if the 'time_memory' variable is True"""
     if SHOW_MEMORY:
-        if memory_exists:
+        if MEMORY_EXISTS:
             print_log('RAM memory % used:', psutil.virtual_memory()[2])
             print_log('RAM Used (GB):', psutil.virtual_memory()[3] / 1000000000)
         else:
