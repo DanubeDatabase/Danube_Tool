@@ -23,12 +23,16 @@
 """
 
 __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
-__date__ = '2023-05-24'
+__date__ = '2023-06-29'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
+
+import os
+from pathlib import Path
+import copy
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (Qgis,
@@ -40,9 +44,20 @@ from qgis.core import (Qgis,
                        QgsProcessingParameterFile,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterNumber
+                       QgsProcessingParameterNumber,
+                       QgsProcessingMultiStepFeedback,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterDefinition,
                        )
+### Import processing (QGIS >= 3.4) - For QGIS < 3.4 : from qgis import processing
+import processing
 
+### Import DANUBE layers definition
+#try: DANUBE_LAYERS
+#except NameError: from DANUBE_config import DANUBE_LAYERS
+from DANUBE_config import DANUBE_LAYERS, DEBUG
+
+from DANUBE_preprocessing_tools import danube_process_launch
 
 class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
     """
@@ -58,65 +73,26 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
     class.
     """
 
-    # Constants used to refer to parameters and outputs. They will be
-    # used when calling the algorithm from another algorithm, or when
-    # calling from the QGIS console.
-
-    OUTPUT = 'OUTPUT'
-    INPUT = 'INPUT'
-    INPUT_BUILDINGS = 'INPUT_BUILDINGS'
-    INPUT_PREPROCESSED = 'INPUT_PREPROCESSED'
-    FILOSOFI = 'FILOSOFI'
-    
-    #from .DANUBE_constants import OUTPUT,INPUT,INPUT_BUILDINGS,INPUT_PREPROCESSED,FILOSOFI
-    #import DANUBE_constants
-
     def initAlgorithm(self, config):
         """
         Here we define the inputs and output of the algorithm, along
         with some other properties.
         """
-
-        # Add the Geoclimate vector features source input folder. 
-        self.addParameter(
-            QgsProcessingParameterFile(
-                self.INPUT,
-                self.tr('Geoclimate Input layers folder'),
-                behavior=QgsProcessingParameterFile.Folder  
-            )
-        )
         
         self.addParameter(
             QgsProcessingParameterFeatureSource(
-                self.INPUT_BUILDINGS,
-                self.tr('Geoclimate Buildings layer'),
+                DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
+                self.tr('Pre-processed building data layer (from step1)'),
                 [QgsProcessing.TypeVectorAnyGeometry]
             )
         )
         
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(
-                self.INPUT_PREPROCESSED,
-                self.tr('Pre-processed building data layer (step1)'),
-                [QgsProcessing.TypeVectorAnyGeometry]
-            )
-        )
-        
-        # Add the FILOSOFI vector features layer (INSEE data at grid format). 
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(
-                self.FILOSOFI,
-                self.tr('FILOSOFI Input layers'),
-                [QgsProcessing.TypeVectorAnyGeometry]
-            )
-        )
-        
-        # We add a feature sink in which to store our processed features (this
+        # We add a Vector layer in which to store the final DANUBE processed features (this
         # usually takes the form of a newly created vector layer when the
-        # algorithm is run in QGIS).
+        # algorithm is run in QGIS).        
         self.addParameter(
-            QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
+            QgsProcessingParameterVectorDestination(
+                DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"],
                 self.tr('DANUBE Data Output layer')
             )
         )
@@ -130,17 +106,17 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
-        source_folder = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
-        source = self.parameterAsSource(parameters, self.INPUT_BUILDINGS, context)
-        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT,
+        #source_folder = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
+        source = self.parameterAsSource(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        ### Create a sink layer with same property as DANUBE_BUILD_PREPROCESS layer
+        (sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"],
                 context, source.fields(), source.wkbType(), source.sourceCrs())
-        ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
-        #print('Geoclimate Input layers folder:'+str(source_folder))
-        #QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
-        #Display Geoclimate folder path inputs
-        source_folder_path = self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
-        QgsMessageLog.logMessage('Geoclimate Input layers folder:'+str(source_folder_path), 'DANUBE tool', level=Qgis.Info)
-
+        # Add and initialize new DANUBE_tool_LAYERS attribute's values with input layers constants, using deepcopy !
+        setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
+        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        output_data_layer = self.parameterAsOutputLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"], context)
+        self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"] = output_data_layer
+        """
         # Compute the number of steps to display within the progress bar and
         # get features from source
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -156,14 +132,15 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
 
             # Update the progress bar
             feedback.setProgress(int(current * total))
-
+        """
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
         # algorithms may return multiple feature sinks, calculated numeric
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
-        return {self.OUTPUT: dest_id}
+        danube_process_launch.process_function_launch(self, parameters, context, feedback)
+        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["id"]: self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]}
 
     def name(self):
         """

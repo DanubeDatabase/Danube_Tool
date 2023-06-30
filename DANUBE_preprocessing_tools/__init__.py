@@ -28,9 +28,10 @@ __date__ = '2023-06-19'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 __version__ = 'v0.0.7'
 __all__ = [
-    "preprocess_function_sample", "preprocess_function_launch",
+    "preprocess_function_sample", "preprocess_function_launch", "process_function_launch",
 ]
 
 #from .DANUBE_constants import OUTPUT,FILOSOFI,GEOCLIMATE_INPUT_BUILDINGS_UTRF
 from .danube_preprocess_sample import preprocess_function_sample
 from .danube_preprocess_launch import preprocess_function_launch
+from .danube_process_launch import process_function_launch
