@@ -25,7 +25,7 @@ changelog= Danube_tool (v0.0.7) - PyDANUBE (v0.0.7)
 # Tags are comma separated with spaces allowed
 tags=urban, architecture, building, typomorphology, materiality, renovation, modelling, environment, simulation
 
-homepage=http://homepage
+homepage=https://lra.toulouse.archi.fr/lra/activites/projets/paendora2/DANUBE_tool
 category=Analysis
 icon=Icons/DANUBE-icon.png
 # experimental flag

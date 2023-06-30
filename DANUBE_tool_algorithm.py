@@ -23,7 +23,7 @@
 """
 
 __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
-__date__ = '2023-06-29'
+__date__ = '2023-06-30'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 # This will get replaced with a git SHA1 when you do a git archive
