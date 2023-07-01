@@ -10,11 +10,11 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     outputs = {}
 
 
-    print_log("\n ______Centroids of DANUBE_BUILD_PREPROCESS______\n")
+    print_log("\n ______Centroids of BUILD_BASE______\n")
     # Centroids
     alg_params = {
         'ALL_PARTS': False,
-        'INPUT': DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'],
+        'INPUT': DANUBE_LAYERS['BUILD_BASE']['layer'],
         'OUTPUT': 'TEMPORARY_OUTPUT'
     }
     outputs['Centroids'] = processing.run('native:centroids', alg_params)
@@ -52,7 +52,7 @@ def add_filo_dens_pop(DANUBE_LAYERS):
 
     print_log("\n ______Join attributes by location _ filosofi squares into centroids______ \n")
 
-    fields_filo_to_join = ['Idcar_nat','Log_av45', 'Log_45_70', 'Log_70_90', 'Log_ap90', 'Log_inc']
+    fields_filo_to_join = ['Idcar_nat','Ind','Men', 'Log_av45', 'Log_45_70', 'Log_70_90', 'Log_ap90', 'Log_inc']
 
     # Join attributes by location _ just the pure data from filosofi
     alg_params = {
@@ -95,7 +95,7 @@ def add_filo_dens_pop(DANUBE_LAYERS):
         'FIELD': 'fid',
         'FIELDS_TO_COPY': fields_filo_to_join,
         'FIELD_2': 'fid',
-        'INPUT': DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'],
+        'INPUT': DANUBE_LAYERS['BUILD_BASE']['layer'],
         'INPUT_2': outputs['JoinAttributesByLocation_SquaresIntoCentroids_2']['OUTPUT'],
         'METHOD': 1,  # Take attributes of the first matching feature only (one-to-one)
         'PREFIX': '',
@@ -104,10 +104,10 @@ def add_filo_dens_pop(DANUBE_LAYERS):
     outputs['Building_with_filo_dens_pop'] = processing.run('native:joinattributestable', alg_params)
 
 
-    DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'] = outputs['Building_with_filo_dens_pop']['OUTPUT']
+    DANUBE_LAYERS['BUILD_BASE']['layer'] = outputs['Building_with_filo_dens_pop']['OUTPUT']
 
-    print_log("\nAfter join dens pop - DANUBE_BUILD_PREPROCESS fields")
-    print_fields(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'])
-    add_layer_gui(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'], 'DANUBE_BUILD_PREPROCESS_dc5_filo_dens_pop')
+    print_log("\nAfter join dens pop - BUILD_BASE fields")
+    print_fields(DANUBE_LAYERS['BUILD_BASE']['layer'])
+    add_layer_gui(DANUBE_LAYERS['BUILD_BASE']['layer'], 'BUILD_BASE_dc5_filo_dens_pop')
 
     return DANUBE_LAYERS

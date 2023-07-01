@@ -1,5 +1,7 @@
 **/__pycache__
 **/.idea
+**/.ipynb_checkpoints
+**/.ipynb
 
 DANUBE_preprocessing_tools/dev_addsys.py
 DANUBE_preprocessing_tools/dev_reload.py

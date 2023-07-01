@@ -12,7 +12,7 @@ def geoclimate_to_gpkg(DANUBE_LAYERS):
 
     def save_in_gpkg_open(layer, layer_name):
         """Run QgsProcessingAlgorithm 'Save vector features to file'"""
-        print_log('_' * 21, 'save layer in gpk', '_' * 21)
+        print_log('_' * 21, 'save layer in gpkg', '_' * 21)
         print_log(layer_name)
         result = processing.run("native:savefeatures",
                                 {'INPUT':layer,
@@ -23,7 +23,7 @@ def geoclimate_to_gpkg(DANUBE_LAYERS):
         layer = open_layer(result['FILE_PATH'])
         return layer
 
-    lays_to_convert = ['GEO_ZONE','GEO_RSU_UTRF_FLOOR_AREA','DANUBE_BUILD_PREPROCESS']
+    lays_to_convert = ['GEO_ZONE','GEO_RSU_UTRF_FLOOR_AREA','BUILD_BASE']
 
     for lay_name in lays_to_convert:
         print_log('Converting', lay_name)
@@ -63,7 +63,7 @@ def spatial_index_layers_to_be_used(DANUBE_LAYERS):
             print_log("_" * 30)
 
     # create spatial index to the layers which will be further used
-    danube_lay_keys_to_be_used = ['TOPO_ACTIVITE', 'FILOSOFI', 'GEO_ZONE','GEO_RSU_UTRF_FLOOR_AREA','DANUBE_BUILD_PREPROCESS']
+    danube_lay_keys_to_be_used = ['TOPO_ACTIVITE', 'FILOSOFI', 'GEO_ZONE','GEO_RSU_UTRF_FLOOR_AREA','BUILD_BASE']
     for dan_lay in danube_lay_keys_to_be_used:
         layer_to_be_used = DANUBE_LAYERS[dan_lay]['layer']
         name_layer_to_be_used = DANUBE_LAYERS[dan_lay]['id']
