@@ -43,15 +43,16 @@ def building_base_layer(DANUBE_LAYERS):
     return joined_buildgeo_bdtopo
 
 def main_dc_1(DANUBE_LAYERS):
-    """Create first layer for 'DANUBE_BUILD_PREPROCESS' from building base layer"""
+    """Create first layer for 'BUILD_BASE' from building base layer"""
     print_log("\n")
     print_log("*" * 100)
     print_log("Run step 1 of data consolidation : Define building base layer with field value joins from:\
                         \nGeoclimate building utrf and building indicator and BD TOPO building layer")
     print_log("*" * 100)
 
-    DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'] = building_base_layer(DANUBE_LAYERS)
-    add_layer_gui(DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'], 'DANUBE_BUILD_PREPROCESS_dc1_building_base')
+    DANUBE_LAYERS['BUILD_BASE'] = {"id":None, "type":None,'layer':None }
+    DANUBE_LAYERS['BUILD_BASE']['layer'] = building_base_layer(DANUBE_LAYERS)
+    add_layer_gui(DANUBE_LAYERS['BUILD_BASE']['layer'], 'BUILD_BASE_dc1_building_base')
 
     return DANUBE_LAYERS
 

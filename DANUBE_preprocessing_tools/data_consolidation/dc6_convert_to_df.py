@@ -11,9 +11,9 @@ OUTPUT_FOLDER = Path(__file__).parent / "output"
 
 
 def save_output_to_csv(DANUBE_LAYERS, city_id):
-    csv_file_name = f"{city_id}_DANUBE_BUILD_PREPROCESS.csv"
+    csv_file_name = f"{city_id}_BUILD_BASE.csv"
     csv_path = str(OUTPUT_FOLDER / csv_file_name)
-    result_save_csv = processing.run("native:savefeatures", {'INPUT': DANUBE_LAYERS['DANUBE_BUILD_PREPROCESS']['layer'],
+    result_save_csv = processing.run("native:savefeatures", {'INPUT': DANUBE_LAYERS['BUILD_BASE']['layer'],
                                                              'OUTPUT': csv_path,
                                                              'LAYER_NAME': csv_file_name,
                                                              'DATASOURCE_OPTIONS': '',
@@ -26,9 +26,9 @@ def save_output_to_csv(DANUBE_LAYERS, city_id):
 
 
 def main_dc6_convert_to_df(DANUBE_LAYERS):
-    """"convert DANUBE_BUILD_PREPROCESS to DataFrame and add city dept info"""
+    """"convert BUILD_BASE to DataFrame and add city dept info"""
     print_log("*" * 100)
-    print_log("Run step 6 of data consolidation : convert DANUBE_BUILD_PREPROCESS to DataFrame and add city dept info")
+    print_log("Run step 6 of data consolidation : convert BUILD_BASE to DataFrame and add city dept info")
     print_log("*" * 100)
 
     city_id = [feature['ID_ZONE'] for feature in DANUBE_LAYERS['GEO_ZONE']['layer'].getFeatures()][0]
