@@ -179,14 +179,16 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         Here is where the processing itself takes place.
         """
         global DANUBE_LAYERS ## Global layers definition
-
+        
+        # Init progress bar to 0
+        feedback.setProgress(int(0))
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
         source_folder = self.parameterAsFile(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
         source = self.parameterAsSource(parameters, DANUBE_LAYERS["GEO_BUILD_URTF"]["id"], context)
-        ### Create a sink layer with same property as GEO_BUILD_URTF layer
+        ### Create a sink layer with same property as DANUBE_BUILD_PREPROCESS layer
         (sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"],
                 context, source.fields(), source.wkbType(), source.sourceCrs())
         ### A tester : self.parameterDefinition('INPUT').valueAsPythonString(parameters['INPUT'], context)
@@ -231,14 +233,27 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
             # Update the progress bar
             feedback.setProgress(int(current * total))
         """
+        # Launch pre-process workflow with self parameter containing all layers' informations self.DANUBE_tool_LAYERS)
+        # TODO: feedback parameter should be used for user feedback processing progression
+        # Other parameters currently unused
+        danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
+        feedback.pushInfo("Launching preprocess phase...")
+        # Returned layer (DANUBE_BUILD_DATA) must be copied to plugin file destination (DANUBE_BUILD_PREPROCESS)
+        # Using "saveselectedfeature" QGIS processing - CSR and features are kepts!
+        feedback.pushInfo("Saving processing results...")
+        layer_source = self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]
+        layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
+        layer_source.selectAll()
+        copied_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT': layer_destination_plugin})['OUTPUT']
+        layer_source.removeSelection()
+        
         # Return the results of the algorithm. In this case our only result is
         # the feature sink which contains the processed features, but some
         # algorithms may return multiple feature sinks, calculated numeric
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
-        # Call external preprocess funtion (preprocess folder)
-        danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
+        # Call external preprocess funtion (preprocess folder
         # Must return result layer(s)
         feedback.pushInfo("Done with processing.")
         return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"]: self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]}
