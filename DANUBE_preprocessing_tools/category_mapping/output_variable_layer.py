@@ -56,7 +56,7 @@ def join_csv_data_build_lay(csv_layer, DANUBE_LAYERS):
 
 def get_output_layer(df, DANUBE_LAYERS):
     print_log("+" * 100)
-    print_log("Run get_output_layer : Archetype definition")
+    print_log("Run get_output_layer : Join results from category mapping to BUILD_BASE")
     print_log("+" * 100)
 
     print(df.columns)
