@@ -5,4 +5,4 @@
 
 DANUBE_preprocessing_tools/dev_addsys.py
 DANUBE_preprocessing_tools/dev_reload.py
-DANUBE_preprocessing_tools/data_consolidation/output/*.csv
+DANUBE_preprocessing_tools/data_consolidation/*.csv
