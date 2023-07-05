@@ -136,7 +136,7 @@ class DANUBE_database:
         if ( f_name == ''): # Generate a temporary output file for CSV
             f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
             f_name = f.name
-        print('Exporting DANUBE Extended Database to :'+ f_name)
+        print('Exporting DANUBE Generalized Database to :'+ f_name)
         self.DANUBE_database_generalized.to_csv(f_name, sep=',', encoding='utf-8', index=False)
         return f_name
 
