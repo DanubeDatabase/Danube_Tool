@@ -1,201 +1,109 @@
-from pathlib import Path
-from qgis.core import QgsField, QgsProject
-from qgis.core import (NULL
-                       )
-from PyQt5.QtCore import QVariant
-
 import pandas as pd
-import processing
+import numpy as np
 
 from config_show import print_log
+from category_mapping.map_reference.shared_ref import dataframe_to_dictionary, PATH_REF_FOLDER
+
+def usage_option1(df, PATH_REF_FOLDER):
+    """Defines the usage from 2 variables in the layer 'BATIMENT' from the BDTOPO"""
+    # Independent files which describes the relation between the categories in BDTOPO BATIMENT and Danube
+    path_association_usage_bati = PATH_REF_FOLDER / "associations_bati_usage1_nature_usage_danube.xlsx"
+    usage_bati_association = pd.read_excel(path_association_usage_bati)
+    usage1_topo_map_dict = dataframe_to_dictionary(usage_bati_association, "USAGE1", "ASSOCIATION_USAGE1_DAN")
+    print_log("\nusage1_topo_map_dict :", usage1_topo_map_dict)
+    nature_topo_map_dict = dataframe_to_dictionary(usage_bati_association, "NATURE", "ASSOCIATION_NATURE_DAN")
+    print_log("\nnature_topo_map_dict :", nature_topo_map_dict)
+
+    df['usage_bati_conv'] = df.topo_USAGE1.map(usage1_topo_map_dict)
+    df['nature_bati_conv'] = df.topo_NATURE.map(nature_topo_map_dict)
+
+    df['usage_option1'] = df['usage_bati_conv'].fillna(df['nature_bati_conv'])
+
+def usage_option2(df, PATH_REF_FOLDER):
+    """Defines the usage from 1 variable in the layer 'ZONE DE ACTIVITE' from the BDTOPO"""
+    path_association_nature_activ = PATH_REF_FOLDER / "associations_activ_nature_usage_danube.xlsx"
+    nature_bati_association = pd.read_excel(path_association_nature_activ)
+    nature_activ_map_dict = dataframe_to_dictionary(nature_bati_association, "NATURE", "Association_Danube")
+    print_log("\nnature_activ_map_dict :", nature_activ_map_dict)
+
+    df['usage_option2'] = df.activ_NATURE.map(nature_activ_map_dict)
 
 
 
+def usage_option3(df):
+    ### Calculate the populational density of the filosofi squares
+    # groupby filosofi square
+    gb = df.groupby('filo_Idcar_nat')
+    # calculate populational density
+    df['dens_pop'] = df['filo_Ind'] / gb['FLOOR_AREA'].transform('sum')
+    # Set the values of 'dens_pop' for building without a filosofi squares with 0
+    df.dens_pop = df.dens_pop.fillna(0)
+    print_log(df.sort_values("filo_Idcar_nat")[["filo_Idcar_nat", "filo_Ind", "FLOOR_AREA", "dens_pop"]])
 
-def usage_from_topo(bati, activ):
+    ### Classify the density
+    # redo groupby filosofi square to include 'dens_pop' values
+    gb = df.groupby('filo_Idcar_nat')
+    # order groups by 'dens_pop'
+    dens_pop_gb_sorted = gb['dens_pop'].mean().sort_values()
+    # Classify the 'dens_pop' by percentual ascending order provide a mapping dictionnary
+    dens_perc_order = (dens_pop_gb_sorted.reset_index().index + 1 ) / len(gb)
+    map_dens_order = dict(zip(list(dens_pop_gb_sorted.index), dens_perc_order))
+    print_log('\nmap_dens_order \n', map_dens_order)
+    # Map the order in the original df data
+    df["dens_perc_order"] = df.filo_Idcar_nat.map(map_dens_order)
+    df.dens_perc_order = df.dens_perc_order.fillna(0)
+    print_log(df.sort_values("dens_pop")[["filo_Idcar_nat", "dens_pop", "dens_perc_order"]])
 
-    #___________________Open Danube association files to BDTOPO categories___________________
-    # charge pandas layer
+    # to define threshold of populational density quantile to distinguish between 'habitat' and 'tertiaire'
+    threshold =  0.25
 
-    path_relation_activ_usage = r"C:\Users\lorena.carvalho\Documents\Develop_outil\auxiliary_tables\associations_activ_nature_usage_danube.xlsx"
-    relation_activ_usage = pd.read_excel(path_relation_activ_usage, usecols=[0,1])
-    printd(relation_activ_usage.columns)
-    printd(relation_activ_usage.head())
+    df['usage_option3'] = np.where(df['dens_perc_order'] > threshold ,
+                                    'habitat', 'tertiaire')
 
-    path_relation_bati_usage = r"C:\Users\lorena.carvalho\Documents\Develop_outil\auxiliary_tables\associations_bati_usage1_nature_usage_danube.xlsx"
-    relation_bati_usage = pd.read_excel(path_relation_bati_usage, usecols=[0,1,2,3])
-    printd(relation_bati_usage.columns)
-    printd(relation_bati_usage.head())
+    df['usage_option3'] = np.where(df['typo_map'] == 'P', 'habitat', df['usage_option3'])
 
+    df['usage_option3'] = np.where(df['typo_map'] == 'BA', 'bâtiment industriel',df['usage_option3'])
 
+    df['usage_option3'] = np.where(df['typo_map'] == 'IGH', 'tertiaire', df['usage_option3'])
 
-    #___________________Associate Danube usage to the"batiment" layer___________________
+def main_cm_usage(df, PATH_REF_FOLDER):
 
-    def associate_usage_from_bati(relation_bati_usage, layer_bati):
-        # make a layer copy
-        bati_copy = copy_layer(layer_bati)
-        bati_copy.startEditing()
-
-        # define the parameters of new fields
-        field_name = ['usage_from_bati_usage1', 'usage_from_bati_nature']
-        field_type = QVariant.String
-        field_length = 255
-        # create new field
-        new_field0 = QgsField(field_name[0], field_type, '', field_length)
-        new_field1 = QgsField(field_name[1], field_type, '', field_length)
-
-        layer_provider = bati_copy.dataProvider()
-        layer_provider.addAttributes([new_field0, new_field1])
-        bati_copy.updateFields()
-
-        # Get the index of the new column in the attribute table
-        new_column_index0 = bati_copy.fields().indexFromName(field_name[0])
-        new_column_index1 = bati_copy.fields().indexFromName(field_name[1])
-
-        for feature in bati_copy.getFeatures():
-            # Get the value from the DataFrame based on a unique identifier in the layer
-            value0 = relation_bati_usage.loc[relation_bati_usage['USAGE1'] == feature['USAGE1'], 'ASSOCIATION_USAGE1_DAN'].values[0]
-            value1 = relation_bati_usage.loc[relation_bati_usage['NATURE'] == feature['NATURE'], 'ASSOCIATION_NATURE_DAN'].values[0]
-            if not pd.isna(value0):
-                bati_copy.changeAttributeValue(feature.id(), new_column_index0, value0)
-            if not pd.isna(value1):
-                bati_copy.changeAttributeValue(feature.id(), new_column_index1, value1)
-        bati_copy.commitChanges()
-
-        return bati_copy
-
-    # Apply the function => create a usage field using the relation from NATURE from the layer 'activ' and the Danube usage categories
-    bati_copy = associate_usage_from_bati(relation_bati_usage, bati)
-    # print("\nBATI COPY FIELDS:\n", bati_copy.fields().names())
-
-
-    #___________________Associate Danube usage into the "surface activité" layer___________________
-
-    def associate_usage_from_activity(relation_activ_usage, layer_activ):
-
-        # make a copy of a layer without saving any reference to the parent layer
-        activ_copy = copy_layer(layer_activ)
-        activ_copy.startEditing()
-
-        # define the parameters of new fields
-        field_name = 'usage_from_activ'
-        field_type = QVariant.String
-        field_length = 255
-        # create new field
-        new_field = QgsField(field_name, field_type, 'varchar', field_length)
-        layer_provider = activ_copy.dataProvider()
-        layer_provider.addAttributes([new_field])
-        activ_copy.updateFields()
-
-        # Get the index of the new column in the attribute table
-        new_column_index = activ_copy.fields().indexFromName(field_name)
-
-        for feature in activ_copy.getFeatures():
-            # Get the value from the DataFrame based on a unique identifier in the layer
-            value = relation_activ_usage.loc[relation_activ_usage['NATURE'] == feature['NATURE'], 'Association_Danube'].values[0]
-
-            # Update the new column with the condition value
-            activ_copy.changeAttributeValue(feature.id(), new_column_index, value)
-
-        activ_copy.commitChanges()
-
-        return activ_copy
-
-    # Apply the function => create a usage field using the relation from NATURE from the layer 'activ' and the Danube usage categories
-
-    activ_copy = associate_usage_from_activity(relation_activ_usage, activ)
-    # print("\nACTIV COPY FIELDS:\n", activ_copy.fields().names())
-
-
-    # #___________________Join "activ" and "bati" layers per location by largest intersection area_________________
-
-    outputs = {}
-    # join with the biggest intersect with the layer activity
-    outputs['activ_bati_junction'] = processing.run("native:joinattributesbylocation",
-                            {'INPUT':bati_copy,
-                            'JOIN': activ_copy,
-                            'PREDICATE':[0], # intersect
-                            'JOIN_FIELDS':['usage_from_activ', 'ID_2','fid_2'],
-                            'METHOD':2, # select just the feature with the largest matching area
-                            'DISCARD_NONMATCHING':False,
-                            'PREFIX':'',
-                            'OUTPUT':'TEMPORARY_OUTPUT'})
-
-    outputs['activ_bati_junction']['OUTPUT'].setName("usage_option_1_2")
-    QgsProject.instance().addMapLayer(outputs['activ_bati_junction']['OUTPUT']) # comment later, just for test
-
-
-    # # #___________________defines the usage from opt 1 and 2 develop_________________
-
-    layer = outputs['activ_bati_junction']['OUTPUT']
-
-
-    # Add a new field to the layer
-    usage_danube_field = QgsField('Usage_Danube', QVariant.String, 'varchar', 255)
-    source_usage_field = QgsField('Source_Usage', QVariant.String, 'varchar', 255)
-
-    layer_provider = layer.dataProvider()
-    layer_provider.addAttributes([source_usage_field, usage_danube_field ])
-    layer.updateFields()
-
-    # # Iterate over the features and update the new field based on the condition
-    layer.startEditing()
-    for feature in layer.getFeatures():
-        feature['Usage_Danube'] = feature['usage_from_bati_usage1']
-        feature['Source_Usage'] = 'bati_usage'
-        # if feature['Usage_Danube'] == qgis.core.NULL:
-        if feature['Usage_Danube'] == NULL:
-            feature['Usage_Danube'] = feature['usage_from_bati_nature']
-            feature['Source_Usage'] = 'bati_nature'
-            # if feature['Usage_Danube'] == qgis.core.NULL:
-            if feature['Usage_Danube'] == NULL:
-                feature['Usage_Danube'] = feature['usage_from_activ']
-                feature['Source_Usage'] = 'activ_nature'
-                if feature['Usage_Danube'] == NULL:
-                    feature['Source_Usage'] = NULL
-        # print( feature['Usage_Danube'] , "--", type(feature['Usage_Danube']),"--", type(feature['usage_from_bati_nature']),"--", type(feature['usage_from_activ']),  )
-        layer.updateFeature(feature)
-    layer.commitChanges()
-
-    return layer
-
-
-def main_cm_usage(df):
     print_log("*" * 100)
     print_log("Run category_mapping - main_cm_usage : mapping Danube usage")
     print_log("*" * 100)
 
-    print_log('TODO')
 
-    #
-    #
-    # project = QgsProject.instance()
-    # #___________________Open layers___________________
-    # # Define path of samples for testing
-    # folder_sample = Path(r"C:\Users\lorena.carvalho\Documents\Develop_outil\data\small_sample")
-    # # path_bati = str(folder_sample / 'sample_topo_bati.gpkg')
-    # # path_activ = str(folder_sample / 'sample_topo_activite.gpkg')
-    # path_bati = str(folder_sample / 'small_bati.gpkg')
-    # path_activ = str(folder_sample / 'small_activ.gpkg')
-    #
-    # # # Define path for Toulouse city testing
-    # # folder_topo_toulouse = r"C:\Users\lorena.carvalho\Documents\Develop_outil\data\Haute_Garonne\BDTOPO\V3\BDTOPO_3-0_TOUSTHEMES_SHP_LAMB93_D031_2022-03-15\BDTOPO\1_DONNEES_LIVRAISON_2022-03-00081\BDT_3-0_SHP_LAMB93_D031-ED2022-03-15"
-    # # path_bati = str(folder_topo_toulouse / Path(r'BATI\BATIMENT.shp'))
-    # # path_activ = str(folder_topo_toulouse / Path(r'SERVICES_ET_ACTIVITES\ZONE_D_ACTIVITE_OU_D_INTERET.shp'))
-    #
-    # bati = open_layer(path_bati)
-    # activ = open_layer(path_activ)
-    # # bati = open_layer("sample_topo_bati")
-    # # activ = open_layer("sample_topo_activite")
-    #
-    # printd("\nBATI FIELDS:\n", bati.fields().names())
-    # printd("\nACTIV FIELDS:\n", activ.fields().names())
-    #
-    # #___________________Usage from BD TOPO___________________
-    # layer = usage_from_topo(bati, activ)
-    #
-    # #___________________Usage from populatinal density___________________
-    # dens_pop()
+    print_log("Before map usage- df.head() \n",df.head())
+    print_log("df.columns ",df.columns)
 
-if __name__ == '__console__':
-    main_cm_usage()
+    usage_option1(df, PATH_REF_FOLDER)
+    print_log("\nAfter map usage1 \n",df[['topo_USAGE1' ,'topo_NATURE', 'usage_option1']])
+    print_log("df.columns ",df.columns)
+
+    usage_option2(df, PATH_REF_FOLDER)
+    print_log("\nAfter map usage2 \n",df[['activ_NATURE', 'usage_option2']])
+    print_log("df.columns ",df.columns)
+
+    usage_option3(df)
+    print_log("\nAfter define usage3  \n",df[['dens_perc_order', 'usage_option3']])
+    print_log("df.columns ",df.columns)
+
+    # Choose the final usage
+    df['usage_map'] = df['usage_option1'].fillna(
+                                                df['usage_option2']).fillna(
+                                                        df['usage_option3'])
+
+    df['usage_source'] = df.apply(lambda row: 'topo_bati' if pd.notnull(row['usage_option1']) else
+                                   ('topo_activ' if pd.notnull(row['usage_option2']) else 'dens_pop'),
+                         axis=1)
+
+    df['usage_quality'] = df.apply(lambda row: 'A' if pd.notnull(row['usage_option1']) else
+                                   ('B' if pd.notnull(row['usage_option2']) else 'C'),
+                         axis=1)
+
+    print_log("\nAfter define final usage  \n",df[['typo_map','usage_map', 'usage_source', 'usage_quality']])
+
+    print_log("df.columns ",df.columns)
+
+    df.to_csv(r'C:\Users\lorena.carvalho\Documents\Develop_outil\density_study\TEST_CSV_EXPORT_USAGE.csv')
+    return df

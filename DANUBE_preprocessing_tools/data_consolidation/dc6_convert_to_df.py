@@ -1,4 +1,4 @@
-import os
+import tempfile
 from pathlib import Path
 
 import pandas as pd
@@ -7,15 +7,20 @@ import processing
 
 from config_show import print_log
 
-OUTPUT_FOLDER = Path(__file__).parent / "output"
+# OUTPUT_FOLDER = Path(__file__).parent
+f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
+f_name = f.name
 
+def save_output_to_csv(DANUBE_LAYERS):
+    file_prefix = "BUILD_BASE_before_CM_"
+    # csv_file_name = "BUILD_BASE_before_CM.csv"
+    # csv_path = str(OUTPUT_FOLDER / csv_file_name)
 
-def save_output_to_csv(DANUBE_LAYERS, city_id):
-    csv_file_name = f"{city_id}_BUILD_BASE.csv"
-    csv_path = str(OUTPUT_FOLDER / csv_file_name)
     result_save_csv = processing.run("native:savefeatures", {'INPUT': DANUBE_LAYERS['BUILD_BASE']['layer'],
-                                                             'OUTPUT': csv_path,
-                                                             'LAYER_NAME': csv_file_name,
+                                                             'OUTPUT': tempfile.NamedTemporaryFile(delete=False,
+                                                                                                   prefix=file_prefix,
+                                                                                                   suffix='.csv').name,
+                                                             'LAYER_NAME': file_prefix,
                                                              'DATASOURCE_OPTIONS': '',
                                                              'LAYER_OPTIONS': ''})
 
@@ -31,16 +36,9 @@ def main_dc6_convert_to_df(DANUBE_LAYERS):
     print_log("Run step 6 of data consolidation : convert BUILD_BASE to DataFrame and add city dept info")
     print_log("*" * 100)
 
-    city_id = [feature['ID_ZONE'] for feature in DANUBE_LAYERS['GEO_ZONE']['layer'].getFeatures()][0]
-    print_log('_' * 21, 'city_id', '_' * 21, '\n')
-    print_log(city_id)
-
-    csv_path = save_output_to_csv(DANUBE_LAYERS, city_id)
+    csv_path = save_output_to_csv(DANUBE_LAYERS)
     df = pd.read_csv(csv_path)
     print_log('df.head(): ', df.head(), "\n")
 
-    df["dept_id"] = city_id[:2]
-    df["city_id"] = city_id
-    print_log('df.head(): ', df.head(), "\n")
 
-    return df
+    return DANUBE_LAYERS, df

@@ -10,9 +10,9 @@ def main_preprocess_all(DANUBE_LAYERS):
     print_log("--------------- START DANUBE PREPROCESSING -----------------")
     print_log("#" * 100)
 
-    DANUBE_LAYERS = timed_execution(main_dc_data_consolidation, DANUBE_LAYERS)
+    DANUBE_LAYERS, df_output_dc = timed_execution(main_dc_data_consolidation, DANUBE_LAYERS)
 
-    df = timed_execution(main_cm_category_mapping, DANUBE_LAYERS)
+    df = timed_execution(main_cm_category_mapping, df_output_dc, DANUBE_LAYERS)
 
     layer_arch  = timed_execution(main_arch, df, DANUBE_LAYERS)
     # DANUBE_LAYERS['DANUBE_BUILD_DATA']['layer'] = layer_arch
