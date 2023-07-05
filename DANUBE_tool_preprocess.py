@@ -238,10 +238,10 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # Other parameters currently unused
         danube_preprocess_launch.preprocess_function_launch(self, parameters, context, feedback)
         feedback.pushInfo("Launching preprocess phase...")
-        # Returned layer (DANUBE_BUILD_DATA) must be copied to plugin file destination (DANUBE_BUILD_PREPROCESS)
+        # Returned layer (BUILD_PP_OUTPUT) must be copied to plugin file destination (DANUBE_BUILD_PREPROCESS)
         # Using "saveselectedfeature" QGIS processing - CSR and features are kepts!
         feedback.pushInfo("Saving processing results...")
-        layer_source = self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]
+        layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
         layer_source.selectAll()
         copied_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT': layer_destination_plugin})['OUTPUT']
