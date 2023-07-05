@@ -25,6 +25,7 @@
 __all__ = [
     'DANUBE_database',
 ]
+__version__ = '0.0.6'
 
 import pandas as pd
 import numpy as np
@@ -215,7 +216,7 @@ class DANUBE_database:
         if not archetype.empty:
             danube_archetype = archetype['ID_ARCHETYPE'].values[0]
         else:
-            print("Warning: Archetype for Period ", period, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
+            print("Warning: Archetype for Period ", periode, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
         return danube_archetype
     
     #Get DANUBE archetype (contained in Generalized DataBase) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
@@ -224,8 +225,8 @@ class DANUBE_database:
         danube_archetype="UNKNOWN" # Default value for unknown archetype
         danube_archetypes_all = self.DANUBE_database_generalized
         if danube_archetypes_all.empty:
-            print('DANUBE extended database is empty. Cannot get informations for archetypes :' + id_archetype + '...')
-            return infos
+            print('DANUBE extended database is empty. Cannot get informations for archetypes...')
+            return danube_archetype
         periode  = self.DANUBE_get_period_from_date(Construction_date) # Get Period
         territoire = self.DANUBE_get_territory(Location, periode, scale)      # Get Territory
         # Fetch archetype data from CATALOGUE

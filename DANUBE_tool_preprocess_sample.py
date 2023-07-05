@@ -218,4 +218,4 @@ class DANUBEtool_preprocess_sample(QgsProcessingAlgorithm):
         return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
-        return DANUBEtool_preprocess()
+        return DANUBEtool_preprocess_sample()
