@@ -11,18 +11,7 @@ DELETE_KEYS = False
 if DELETE_KEYS:
     import gc
 
-def delete_non_used_layers(DANUBE_LAYERS, keys_to_delete):
-    print_log("\nBefore deleting layers")
-    print_log("DANUBE_LAYERS", DANUBE_LAYERS.keys())
-    print_memory_use()
 
-    for key in keys_to_delete:
-        del DANUBE_LAYERS[key]
-    gc.collect()
-
-    print_log("\nAfter deleting layers")
-    print_log("DANUBE_LAYERS.keys", DANUBE_LAYERS.keys())
-    print_memory_use()
 
 
 def main_dc_data_consolidation(DANUBE_LAYERS):
@@ -35,9 +24,6 @@ def main_dc_data_consolidation(DANUBE_LAYERS):
 
     # step 1  - construct building base layer with algorithms independent of spatial attributes
     DANUBE_LAYERS = timed_execution(main_dc_1, DANUBE_LAYERS)
-
-    if DELETE_KEYS:
-        delete_non_used_layers(DANUBE_LAYERS, ['GEO_BUILD_URTF','GEO_BUILD_IND','TOPO_BATI'] )
 
     # ____________________________________________________________________________________________________________
 
@@ -57,17 +43,12 @@ def main_dc_data_consolidation(DANUBE_LAYERS):
     DANUBE_LAYERS =  timed_execution(main_topo_activ, DANUBE_LAYERS)
     print_memory_use()
 
-    if DELETE_KEYS:
-        delete_non_used_layers(DANUBE_LAYERS, ['TOPO_ACTIVITE'] )
-
     # ____________________________________________________________________________________________________________
 
     # step 5 - calculate and add attributes from filosofi: dens_pop, and all log (period of construction)
     DANUBE_LAYERS =  timed_execution(add_filo_dens_pop, DANUBE_LAYERS)
     print_memory_use()
 
-    if DELETE_KEYS:
-        delete_non_used_layers(DANUBE_LAYERS, ['FILOSOFI'] )
     # ____________________________________________________________________________________________________________
 
     # step 6 - convert DANUBE_BUILD_PREPROCESS to DataFrame and add city dept info
