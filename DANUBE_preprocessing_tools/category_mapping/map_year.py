@@ -54,7 +54,7 @@ def main_cm_period(df):
                                                 axis=1)
 
     df['year_quality'] = df.apply(lambda row: 'A' if pd.notnull(row['year_option1']) else
-                                                ('B' if pd.notnull(row['year_option2']) else 'C'),
+                                                ('B' if pd.notnull(row['year_option2']) else 'D'),
                                                  axis=1)
 
     print_log("\nAfter define final year  \n",df[['year_map','year_source', 'year_quality']])

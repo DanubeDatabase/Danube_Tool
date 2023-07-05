@@ -1,4 +1,5 @@
 import tempfile
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -38,6 +39,9 @@ def main_dc6_convert_to_df(DANUBE_LAYERS):
 
     csv_path = save_output_to_csv(DANUBE_LAYERS)
     df = pd.read_csv(csv_path)
+
+    os.unlink(csv_path)
+
     print_log('df.head(): ', df.head(), "\n")
 
 

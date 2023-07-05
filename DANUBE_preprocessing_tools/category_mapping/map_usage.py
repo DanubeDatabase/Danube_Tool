@@ -31,6 +31,7 @@ def usage_option2(df, PATH_REF_FOLDER):
 
 
 def usage_option3(df):
+    print_log('\n_____Calculation of populational density_____')
     ### Calculate the populational density of the filosofi squares
     # groupby filosofi square
     gb = df.groupby('filo_Idcar_nat')
@@ -53,6 +54,8 @@ def usage_option3(df):
     df["dens_perc_order"] = df.filo_Idcar_nat.map(map_dens_order)
     df.dens_perc_order = df.dens_perc_order.fillna(0)
     print_log(df.sort_values("dens_pop")[["filo_Idcar_nat", "dens_pop", "dens_perc_order"]])
+
+    print_log('\n_____Definition of usage option 3_____')
 
     # to define threshold of populational density quantile to distinguish between 'habitat' and 'tertiaire'
     threshold =  0.25

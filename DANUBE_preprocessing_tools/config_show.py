@@ -68,10 +68,10 @@ def print_memory_use():
 
 def add_layer_gui(layer, layer_name=None):
     """Add the layer to the QGIS GUI if the 'SHOW_GUI_LAY' variable is True"""
+    if layer_name:
+        layer.setName(layer_name)
     if SHOW_GUI_LAY:
         # add layer to open project in QGIS
-        if layer_name:
-            layer.setName(layer_name)
         QgsProject.instance().addMapLayer(layer)
 
 
