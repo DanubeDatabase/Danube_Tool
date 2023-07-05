@@ -34,34 +34,34 @@ def geoclimate_to_gpkg(DANUBE_LAYERS):
     return DANUBE_LAYERS
 
 
+def check_spatial_index(layer):
+    """Check the spatial index status of a layer"""
+    if layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexNotPresent:
+        print_log("Spatial Index not present")
+    elif layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexUnknown:
+        print_log("Spatial Index unknown")
+    elif layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexPresent:
+        print_log("Spatial Index present")
+    else:
+        print_log("Could not verify the existence of spatial index")
+
+def check_and_run_spatial_index(layer_name, layer):
+    """Run Spatial index, if not already present """
+    print_log(layer_name)
+    check_spatial_index(layer)
+    if layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexPresent:
+        print_log("No need to run spatial index")
+        print_log("_" * 30)
+    else:
+        print_log("Run spatial index")
+        processing.run("native:createspatialindex",{'INPUT':layer})
+        print_log("after run spatial index")
+        check_spatial_index(layer)
+        print_log("_" * 30)
+
+
 def spatial_index_layers_to_be_used(DANUBE_LAYERS):
     """Creates spatial index to the layers which will be further used, if not already present"""
-
-    def check_spatial_index(layer):
-        """Check the spatial index status of a layer"""
-        if layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexNotPresent:
-            print_log("Spatial Index not present")
-        elif layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexUnknown:
-            print_log("Spatial Index unknown")
-        elif layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexPresent:
-            print_log("Spatial Index present")
-        else:
-            print_log("Could not verify the existence of spatial index")
-
-    def check_and_run_spatial_index(layer_name, layer):
-        """Run Spatial index, if not already present """
-        print_log(layer_name)
-        check_spatial_index(layer)
-        if layer.hasSpatialIndex() == QgsFeatureSource.SpatialIndexPresent:
-            print_log("No need to run spatial index")
-            print_log("_" * 30)
-        else:
-            print_log("Run spatial index")
-            processing.run("native:createspatialindex",{'INPUT':layer})
-            print_log("after run spatial index")
-            check_spatial_index(layer)
-            print_log("_" * 30)
-
     # create spatial index to the layers which will be further used
     danube_lay_keys_to_be_used = ['TOPO_ACTIVITE', 'FILOSOFI', 'GEO_ZONE','GEO_RSU_UTRF_FLOOR_AREA','BUILD_BASE']
     for dan_lay in danube_lay_keys_to_be_used:

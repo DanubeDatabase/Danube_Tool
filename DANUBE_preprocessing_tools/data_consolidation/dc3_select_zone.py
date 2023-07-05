@@ -1,6 +1,7 @@
 import processing
 
 from config_show import add_layer_gui, print_log, print_fields
+from data_consolidation.dc2_create_spatial_index import check_and_run_spatial_index
 
 
 def main_dc_3(DANUBE_LAYERS):
@@ -13,6 +14,7 @@ def main_dc_3(DANUBE_LAYERS):
     to_reduce = ['TOPO_ACTIVITE', 'FILOSOFI']
     for lay_name in to_reduce:
         print_log(lay_name)
+
         add_layer_gui(DANUBE_LAYERS[lay_name]['layer'], lay_name + '_dc3_before_zone_selection')
 
         output_extracted = processing.run("native:extractbylocation",
@@ -25,13 +27,7 @@ def main_dc_3(DANUBE_LAYERS):
 
         print_fields(output_extracted)
 
-
-
-
-
-
-
-
+        check_and_run_spatial_index(DANUBE_LAYERS[lay_name]['id'], DANUBE_LAYERS[lay_name]['layer'])
 
         add_layer_gui(DANUBE_LAYERS[lay_name]['layer'], lay_name + '_dc3_after_zone_selection')
 
@@ -39,11 +35,7 @@ def main_dc_3(DANUBE_LAYERS):
 
 
 if __name__ == '__console__':
-
     from config_show import DANUBE_LAYERS
 
     DANUBE_LAYERS = main_dc_2(DANUBE_LAYERS)
     DANUBE_LAYERS = main_dc_3(DANUBE_LAYERS)
-
-
-
