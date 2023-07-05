@@ -11,7 +11,6 @@ SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the 
 # if False, it uses local data from Haute-Garonne and Toulouse to test the workflow.
 
 
-
 def open_local_data_sample(small_sample):
     """Define DANUBE_LAYERS for test
      Adjust the following paths in a different computer:

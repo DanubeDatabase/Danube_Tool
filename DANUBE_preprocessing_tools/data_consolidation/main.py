@@ -53,14 +53,14 @@ def main_dc_data_consolidation(DANUBE_LAYERS):
 
     # step 6 - convert DANUBE_BUILD_PREPROCESS to DataFrame and add city dept info
 
-    df_output_dc = timed_execution(main_dc6_convert_to_df, DANUBE_LAYERS)
+    DANUBE_LAYERS, df_output_dc = timed_execution(main_dc6_convert_to_df, DANUBE_LAYERS)
 
 
     print_log("+" * 100)
     print_log("--------------- END DATA CONSOLIDATION -----------------")
     print_log("+" * 100)
 
-    return df_output_dc
+    return DANUBE_LAYERS, df_output_dc
 
 if __name__ == '__console__':
 
