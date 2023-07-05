@@ -61,10 +61,10 @@ def get_output_layer(df, DANUBE_LAYERS):
 
     print(df.columns)
 
-    layer_from_csv, csv_path = convert_df_to_layer(df)
+    layer_from_csv, csv_cm_path = convert_df_to_layer(df)
 
     output_layer = join_csv_data_build_lay(layer_from_csv, DANUBE_LAYERS)
 
-    # os.unlink(csv_path) # csv file cannot be deleted, since it is used in the output_layer
+    # os.unlink(csv_cm_path) # csv file cannot be deleted, since it is used in the output_layer
 
     return output_layer
