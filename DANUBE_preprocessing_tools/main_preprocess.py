@@ -12,7 +12,7 @@ def main_preprocess_all(DANUBE_LAYERS):
 
     DANUBE_LAYERS, df_output_dc = timed_execution(main_dc_data_consolidation, DANUBE_LAYERS)
 
-    DANUBE_LAYERS['BUILD_PP_OUTPUT'] = {"id":None, "type":None,'layer':None }
+    DANUBE_LAYERS['BUILD_PP_OUTPUT'] = {"id":'BUILD_PP_OUTPUT', "type":'INTERMEDIATE','layer':None }
     DANUBE_LAYERS['BUILD_PP_OUTPUT']['layer']  = timed_execution(main_cm_category_mapping, df_output_dc, DANUBE_LAYERS)
     print_log('\nDANUBE_LAYERS.keys(): ', DANUBE_LAYERS.keys())
 

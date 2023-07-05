@@ -50,7 +50,7 @@ def main_dc_1(DANUBE_LAYERS):
                         \nGeoclimate building utrf and building indicator and BD TOPO building layer")
     print_log("*" * 100)
 
-    DANUBE_LAYERS['BUILD_BASE'] = {"id":None, "type":None,'layer':None }
+    DANUBE_LAYERS['BUILD_BASE'] = {"id":'BUILD_BASE', "type":'INTERMEDIATE','layer':None }
     DANUBE_LAYERS['BUILD_BASE']['layer'] = building_base_layer(DANUBE_LAYERS)
     add_layer_gui(DANUBE_LAYERS['BUILD_BASE']['layer'], 'BUILD_BASE_dc1_building_base')
 
