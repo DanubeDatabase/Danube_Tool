@@ -48,5 +48,5 @@ def preprocess_function_launch(self, parameters, context, feedback):
         if DEBUG: QgsMessageLog.logMessage('    self.DANUBE_tool_LAYERS.[GEO_ZONE].source:'+str(self.DANUBE_tool_LAYERS["GEO_BUILD_URTF"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
         main_preprocess_all_plugin(self, parameters, context, feedback)
         ### Changement return value : if DEBUG: QgsMessageLog.logMessage('From main_preprocess_all_plugin DANUBE_BUILD_DATA:'+str(self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
-        if DEBUG: QgsMessageLog.logMessage('From main_preprocess_all_plugin DANUBE_BUILD_DATA:'+str(self.DANUBE_tool_LAYERS["BUILD_BASE"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('From main_preprocess_all_plugin BUILD_PP_OUTPUT:'+str(self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
         return

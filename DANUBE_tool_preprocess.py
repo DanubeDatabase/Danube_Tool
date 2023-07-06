@@ -242,7 +242,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         # Using "saveselectedfeature" QGIS processing - CSR and features are kepts!
         feedback.pushInfo("Saving processing results...")
         layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
-        if DEBUG: QgsMessageLog.logMessage('BUILD_PP_OUPUT Layer:'+str(self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]), 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('BUILD_PP_OUTPUT Layer source:'+str(self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
         layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
         layer_source.selectAll()
