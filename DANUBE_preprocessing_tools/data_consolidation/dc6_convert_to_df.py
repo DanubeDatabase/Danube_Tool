@@ -32,7 +32,12 @@ def main_dc6_convert_to_df(DANUBE_LAYERS):
     print_log("*" * 100)
 
     csv_path = save_output_to_csv(DANUBE_LAYERS)
-    df = pd.read_csv(csv_path)
+
+    try:
+        df = pd.read_csv(csv_path, encoding='utf-8')
+    except:
+        print_log("Erreur reading CSV file using utf-8. Try latin1...")
+        df = pd.read_csv(csv_path, encoding='latin1')
 
     os.unlink(csv_path)
 
