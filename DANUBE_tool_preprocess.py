@@ -52,7 +52,7 @@ from qgis.core import (Qgis,
 ### Import processing (QGIS >= 3.4) - For QGIS < 3.4 : from qgis import processing
 import processing
 
-### Import DANUBE layers definition
+#### Import DANUBE layers definition
 #try: DANUBE_LAYERS
 #except NameError: from DANUBE_config import DANUBE_LAYERS
 from DANUBE_config import DANUBE_LAYERS, DEBUG
@@ -243,6 +243,7 @@ class DANUBEtool_preprocess(QgsProcessingAlgorithm):
         feedback.pushInfo("Saving processing results...")
         layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         if DEBUG: QgsMessageLog.logMessage('BUILD_PP_OUPUT Layer:'+str(self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]), 'DANUBE tool', level=Qgis.Info)
+        layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
         layer_source.selectAll()
         copied_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT': layer_destination_plugin})['OUTPUT']
