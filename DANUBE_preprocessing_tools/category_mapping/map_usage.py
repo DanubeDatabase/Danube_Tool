@@ -106,5 +106,4 @@ def main_cm_usage(df, PATH_REF_FOLDER):
 
     print_log("df.columns ", df.columns)
 
-    df.to_csv(r'C:\Users\lorena.carvalho\Documents\Develop_outil\density_study\TEST_CSV_EXPORT_USAGE.csv')
     return df
