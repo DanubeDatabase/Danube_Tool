@@ -8,14 +8,8 @@ import processing
 
 from config_show import print_log
 
-# OUTPUT_FOLDER = Path(__file__).parent
-f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
-f_name = f.name
-
 def save_output_to_csv(DANUBE_LAYERS):
     file_prefix = "BUILD_BASE_before_CM_"
-    # csv_file_name = "BUILD_BASE_before_CM.csv"
-    # csv_path = str(OUTPUT_FOLDER / csv_file_name)
 
     result_save_csv = processing.run("native:savefeatures", {'INPUT': DANUBE_LAYERS['BUILD_BASE']['layer'],
                                                              'OUTPUT': tempfile.NamedTemporaryFile(delete=False,
