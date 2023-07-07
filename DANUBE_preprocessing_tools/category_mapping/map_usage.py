@@ -37,36 +37,36 @@ def usage_option3(df):
     # groupby filosofi square
     gb = df.groupby('filo_Idcar_nat')
     # calculate populational density
-    df['dens_pop'] = df['filo_Ind'] / gb['FLOOR_AREA'].transform('sum')
-    # Set the values of 'dens_pop' for building without a filosofi squares with 0
-    df.dens_pop = df.dens_pop.fillna(0)
-    print_log(df.sort_values("filo_Idcar_nat")[["filo_Idcar_nat", "filo_Ind", "FLOOR_AREA", "dens_pop"]])
+    df['dens_pers_m2build'] = df['filo_Ind'] / gb['FLOOR_AREA'].transform('sum')
+    # Set the values of 'dens_pers_m2build' for building without a filosofi squares with 0
+    df.dens_pers_m2build = df.dens_pers_m2build.fillna(0)
+    print_log(df.sort_values("filo_Idcar_nat")[["filo_Idcar_nat", "filo_Ind", "FLOOR_AREA", "dens_pers_m2build"]])
 
     ### Classify the density
-    # redo groupby filosofi square to include 'dens_pop' values
+    # redo groupby filosofi square to include 'dens_pers_m2build' values
     gb = df.groupby('filo_Idcar_nat')
-    # order groups by 'dens_pop'
-    dens_pop_gb_sorted = gb['dens_pop'].mean().sort_values()
-    # Classify the 'dens_pop' by percentual ascending order provide a mapping dictionnary
-    dens_perc_order = (dens_pop_gb_sorted.reset_index().index + 1) / len(gb)
-    map_dens_order = dict(zip(list(dens_pop_gb_sorted.index), dens_perc_order))
-    print_log('\nmap_dens_order \n', map_dens_order)
+    # order groups by 'dens_pers_m2build'
+    dens_pers_m2build_gb_sorted = gb['dens_pers_m2build'].mean().sort_values()
+    # Classify the 'dens_pers_m2build' by percentual ascending order provide a mapping dictionnary
+    dens_quantile = (dens_pers_m2build_gb_sorted.reset_index().index + 1) / len(gb)
+    map_dens_quantile = dict(zip(list(dens_pers_m2build_gb_sorted.index), dens_quantile))
+    print_log('\nmap_dens_quantile \n', map_dens_quantile)
     # Map the order in the original df data
-    df["dens_perc_order"] = df.filo_Idcar_nat.map(map_dens_order)
-    df.dens_perc_order = df.dens_perc_order.fillna(0)
-    print_log(df.sort_values("dens_pop")[["filo_Idcar_nat", "dens_pop", "dens_perc_order"]])
+    df["dens_quantile"] = df.filo_Idcar_nat.map(map_dens_quantile)
+    df.dens_quantile = df.dens_quantile.fillna(0)
+    print_log(df.sort_values("dens_pers_m2build")[["filo_Idcar_nat", "dens_pers_m2build", "dens_quantile"]])
 
     print_log('\n_____Definition of usage option 3_____')
 
     # to define threshold of populational density quantile to distinguish between 'habitat' and 'tertiaire'
     threshold = 0.25
 
-    df['usage_option3'] = np.where(df['dens_perc_order'] > threshold,
+    df['usage_option3'] = np.where(df['dens_quantile'] > threshold,
                                    'habitat', 'tertiaire')
 
-    df['usage_option3'] = np.where(df['typo_map'] == 'P', 'habitat', df['usage_option3'])
+    df['usage_option3'] = np.where(df['typology_map'] == 'P', 'habitat', df['usage_option3'])
 
-    df['usage_option3'] = np.where(df['typo_map'] == 'BA', 'bâtiment industriel', df['usage_option3'])
+    df['usage_option3'] = np.where(df['typology_map'] == 'BA', 'bâtiment industriel', df['usage_option3'])
 
 
 def main_cm_usage(df, PATH_REF_FOLDER):
@@ -86,7 +86,7 @@ def main_cm_usage(df, PATH_REF_FOLDER):
     print_log("df.columns ", df.columns)
 
     usage_option3(df)
-    print_log("\nAfter define usage3  \n", df[['dens_perc_order', 'usage_option3']])
+    print_log("\nAfter define usage3  \n", df[['dens_quantile', 'usage_option3']])
     print_log("df.columns ", df.columns)
 
     # Choose the final usage
@@ -95,14 +95,14 @@ def main_cm_usage(df, PATH_REF_FOLDER):
         df['usage_option3'])
 
     df['usage_source'] = df.apply(lambda row: 'topo_bati' if pd.notnull(row['usage_option1']) else
-    ('topo_activ' if pd.notnull(row['usage_option2']) else 'dens_pop'),
+    ('topo_activ' if pd.notnull(row['usage_option2']) else 'dens_pers_m2build'),
                                   axis=1)
 
     df['usage_quality'] = df.apply(lambda row: 'A' if pd.notnull(row['usage_option1']) else
     ('B' if pd.notnull(row['usage_option2']) else 'C'),
                                    axis=1)
 
-    print_log("\nAfter define final usage  \n", df[['typo_map', 'usage_map', 'usage_source', 'usage_quality']])
+    print_log("\nAfter define final usage  \n", df[['typology_map', 'usage_map', 'usage_source', 'usage_quality']])
 
     print_log("df.columns ", df.columns)
 
