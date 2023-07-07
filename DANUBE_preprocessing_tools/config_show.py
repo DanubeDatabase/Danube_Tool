@@ -35,14 +35,8 @@ def timed_execution(func, *args, **kwargs):
     result = func(*args, **kwargs)
     end = time.time()
     total_time = end - start
-
-    # message = f"\n{'_' * 25}  \n{func.__name__} \nexecution time \n{total_time:.2f} sec or {total_time / 60:.2f} min  \n{'_' * 25}"
-    message = f"\n{'_' * 25}  \n{func.__name__} \nexecution time \n{total_time:.2f} sec or {total_time / 60:.2f} min  \n"
-
-    # print_log("_" * 25)
+    message = f"\n{'_' * 25}  \n{func.__name__} \nexecution time \n{total_time:.3f} sec or {total_time / 60:.2f} min  \n"
     print_log(message)
-    # print_log('_' * 25)
-
     QgsMessageLog.logMessage(message, 'Processing time', level=Qgis.Info)
     return result
 
