@@ -62,11 +62,11 @@ def usage_option3(df):
     threshold = 0.25
 
     df['usage_option3'] = np.where(df['dens_quantile'] > threshold,
-                                   'habitat', 'tertiaire')
+                                   'HABITAT', 'TERTIAIRE')
 
-    df['usage_option3'] = np.where(df['typology_map'] == 'P', 'habitat', df['usage_option3'])
+    df['usage_option3'] = np.where(df['typology_danube'] == 'P', 'HABITAT', df['usage_option3'])
 
-    df['usage_option3'] = np.where(df['typology_map'] == 'BA', 'bâtiment industriel', df['usage_option3'])
+    df['usage_option3'] = np.where(df['typology_danube'] == 'BA', 'BATIMENT INDUSTRIEL', df['usage_option3'])
 
 
 def main_cm_usage(df, PATH_REF_FOLDER):
@@ -90,9 +90,10 @@ def main_cm_usage(df, PATH_REF_FOLDER):
     print_log("df.columns ", df.columns)
 
     # Choose the final usage
-    df['usage_map'] = df['usage_option1'].fillna(
+    df['usage_danube'] = df['usage_option1'].fillna(
         df['usage_option2']).fillna(
         df['usage_option3'])
+
 
     df['usage_source'] = df.apply(lambda row: 'topo_bati' if pd.notnull(row['usage_option1']) else
     ('topo_activ' if pd.notnull(row['usage_option2']) else 'dens_pers_m2build'),
@@ -102,7 +103,15 @@ def main_cm_usage(df, PATH_REF_FOLDER):
     ('B' if pd.notnull(row['usage_option2']) else 'C'),
                                    axis=1)
 
-    print_log("\nAfter define final usage  \n", df[['typology_map', 'usage_map', 'usage_source', 'usage_quality']])
+    # correct hypothesis in association table from usage_option1 that 'Commercial et services' == commerce
+    # if a tertiaire activity zone exists, it should be taken in account instead
+    cond_comm_tert = ((df['usage_option1']=='COMMERCE') & (df['usage_option2']=='TERTIAIRE'))
+    df.loc[cond_comm_tert, ['usage_danube']] = 'TERTIAIRE'
+    df.loc[cond_comm_tert, ['usage_source']] = 'topo_activ'
+    df.loc[cond_comm_tert, ['usage_quality']] = 'B'
+
+
+    print_log("\nAfter define final usage  \n", df[['typology_danube', 'usage_danube', 'usage_source', 'usage_quality']])
 
     print_log("df.columns ", df.columns)
 
