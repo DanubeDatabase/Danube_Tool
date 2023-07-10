@@ -30,7 +30,7 @@ def create_period(df):
     bins = [0, 1948, 1973, 1981, 1989, 2000, 2012, 3000]
     labels = ["P1", "P2", "P3", "P4", "P5", "P6", "P7"]
 
-    df['period_map'] = pd.cut(df['year_map'], bins=bins, labels=labels)
+    df['period_danube'] = pd.cut(df['year_constr'], bins=bins, labels=labels)
 
     df['period_source'] = df.apply(lambda row: 'topo_bati' if pd.notnull(row['year_option1']) else
     ('topo_bati' if pd.notnull(row['year_option2']) else 'filosofi'),
@@ -62,7 +62,7 @@ def main_cm_period(df):
     print_log("df.columns ", df.columns)
 
     # Choose the final year
-    df['year_map'] = df['year_option1'].fillna(
+    df['year_constr'] = df['year_option1'].fillna(
         df['year_option2']).fillna(
         df['year_option3'])
 
@@ -77,10 +77,10 @@ def main_cm_period(df):
     timed_execution(create_period, df)
 
 
-    df['year_map'] = pd.to_numeric(df['year_map'], errors='coerce').astype('Int64')
-    df['year_map'] = df['year_map'].astype(str)
+    df['year_constr'] = pd.to_numeric(df['year_constr'], errors='coerce').astype('Int64')
+    df['year_constr'] = df['year_constr'].astype(str)
 
-    print_log("\nAfter define final year  \n", df[['year_map', 'year_source', 'year_quality']])
+    print_log("\nAfter define final year  \n", df[['year_constr', 'year_source', 'year_quality']])
     print_log("df.columns ", df.columns)
 
     return (df)
