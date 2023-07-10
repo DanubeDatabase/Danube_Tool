@@ -39,16 +39,17 @@ def join_csv_data_build_lay(csv_layer, DANUBE_LAYERS):
         'FIELD': 'ID_BUILD',
         'INPUT_2': csv_layer,
         'FIELD_2': 'ID_BUILD',
-        'FIELDS_TO_COPY': ['typology_map', 'typology_source', 'typology_quality',
+        'FIELDS_TO_COPY': ['typology_danube', 'typology_source', 'typology_quality',
                            'dens_pers_m2build', 'dens_quantile',
-                           'usage_map', 'usage_source', 'usage_quality',
-                           'year_map', 'year_source', 'year_quality',
-                           'period_map', 'period_source', 'period_quality',
+                           'usage_danube', 'usage_source', 'usage_quality',
+                           'year_constr', 'year_source', 'year_quality',
+                           'period_danube', 'period_source', 'period_quality',
                            'location_dept', 'location_comm', 'location_source', 'location_quality',
-                           'territory_dept', 'territory_comm', 'territory_source', 'territory_quality'],
+                           'territory_dept', 'territory_comm', 'territory_source', 'territory_quality',
+                           'arch_dept', 'arch_dept_id', 'arch_comm', 'arch_comm_id'],
         'METHOD': 1,
         'DISCARD_NONMATCHING': False,
-        'PREFIX': 'cm_',
+        'PREFIX': '',
         'OUTPUT': 'TEMPORARY_OUTPUT'})['OUTPUT']
 
     print_log("type(layer_joined_csv_data): ", type(layer_joined_csv_data))
@@ -69,6 +70,6 @@ def get_output_layer(df, DANUBE_LAYERS):
 
     output_layer = join_csv_data_build_lay(layer_from_csv, DANUBE_LAYERS)
 
-    # os.unlink(csv_path) # csv file cannot be deleted, since it is used in the output_layer
+    os.unlink(csv_path) # csv file cannot be deleted, since it is used in the output_layer
 
     return output_layer
