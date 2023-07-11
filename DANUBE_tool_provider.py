@@ -34,8 +34,8 @@ import os
 from qgis.core import QgsProcessingProvider
 from qgis.PyQt.QtGui import QIcon
 from .DANUBE_tool_algorithm import DANUBEtoolAlgorithm
-from .DANUBE_tool_preprocess import DANUBEtool_preprocess
-from .DANUBE_tool_preprocess_sample import DANUBEtool_preprocess_sample
+from .DANUBE_tool_process import DANUBEtool_process
+from .DANUBE_tool_process_sample import DANUBEtool_process_sample
 
 DANUBE_toolPath = os.path.dirname(__file__)
 
@@ -59,8 +59,8 @@ class DANUBEtoolProvider(QgsProcessingProvider):
         Loads all algorithms belonging to this provider.
         """
         self.addAlgorithm(DANUBEtoolAlgorithm())
-        self.addAlgorithm(DANUBEtool_preprocess())
-        self.addAlgorithm(DANUBEtool_preprocess_sample())
+        self.addAlgorithm(DANUBEtool_process())
+        self.addAlgorithm(DANUBEtool_process_sample())
         # add additional algorithms here
         # self.addAlgorithm(MyOtherAlgorithm())
 

@@ -57,7 +57,7 @@ import processing
 #except NameError: from DANUBE_config import DANUBE_LAYERS
 from DANUBE_config import DANUBE_LAYERS, DEBUG
 
-from DANUBE_preprocessing_tools import danube_process_launch
+from DANUBE_processing_tools import danube_process_launch_old
 
 class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
     """
