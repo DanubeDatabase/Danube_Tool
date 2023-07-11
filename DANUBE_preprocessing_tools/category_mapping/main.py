@@ -3,9 +3,10 @@ from category_mapping.map_period import main_cm_period
 from category_mapping.map_territory import main_cm_territory
 from category_mapping.map_typology import main_cm_typology
 from category_mapping.map_usage import main_cm_usage
+from category_mapping.map_archetype import main_archetype
 from category_mapping.output_variable_layer import get_output_layer
 
-from category_mapping.map_reference.shared_ref import PATH_REF_FOLDER
+from category_mapping.map_reference.shared_ref import PATH_REF_FOLDER, PATH_DANUBE_TABLES_FOLDER
 
 def main_cm_category_mapping(df, DANUBE_LAYERS):
     print_log("+" * 100)
@@ -20,7 +21,8 @@ def main_cm_category_mapping(df, DANUBE_LAYERS):
     main_cm_typology(df, PATH_REF_FOLDER)
     main_cm_usage(df, PATH_REF_FOLDER)
     main_cm_period(df)
-    main_cm_territory(df, DANUBE_LAYERS)
+    main_cm_territory(df, DANUBE_LAYERS, PATH_DANUBE_TABLES_FOLDER)
+    main_archetype(df, PATH_DANUBE_TABLES_FOLDER)
 
     output_layer = get_output_layer(df, DANUBE_LAYERS)
 
