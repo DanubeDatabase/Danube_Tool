@@ -178,7 +178,7 @@ class DANUBEtool_process(QgsProcessingAlgorithm):
         """
         Here is where the processing itself takes place.
         """
-        global DANUBE_LAYERS ## Global layers definition
+        #global DANUBE_LAYERS ## Global layers definition
         
         # Init progress bar to 0
         feedback.setProgress(int(0))
@@ -243,7 +243,6 @@ class DANUBEtool_process(QgsProcessingAlgorithm):
         feedback.pushInfo("Saving processing results...")
         layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         if DEBUG: QgsMessageLog.logMessage('BUILD_PP_OUTPUT Layer source:'+str(self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
-        layer_source = self.DANUBE_tool_LAYERS["BUILD_PP_OUTPUT"]["layer"]
         layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
         layer_source.selectAll()
         copied_layer = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT': layer_destination_plugin})['OUTPUT']

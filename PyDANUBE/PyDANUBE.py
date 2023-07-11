@@ -34,6 +34,17 @@ import time
 import os
 import tempfile
 
+DEBUG_DANUBE = False
+PRINT_LOG = False
+
+def print_l(*args):
+    if PRINT_LOG:
+        print(*args)
+def print_d(*args):
+    if DEBUG_DANUBE:
+        print(*args)
+
+
 # Define DANUBE Database class
 
 # Default DANUBE database local folder path (relative)
@@ -84,12 +95,12 @@ class DANUBE_database:
             danube_data_path =  os.path.join(os.path.dirname(__file__), DEFAULT_DANUBE_PATH)
         else:
             danube_data_path = self.path
-        print("Current Database path:"+danube_data_path)
+        print_d("Current Database path:"+danube_data_path)
         for table_name, table_path in DEFAULT_DANUBE_DATA_TABLES.items():
         #for table_name in DEFAULT_DANUBE_DATA_TABLES:
             #process reading table
             cvs_filename = os.path.join(danube_data_path, table_path+'.csv')
-            print("Reading DANUBE table:"+table_name+" from filename:"+cvs_filename)
+            print_d("Reading DANUBE table:"+table_name+" from filename:"+cvs_filename)
             df = pd.read_csv(cvs_filename)
             self.DANUBE_tables[table_name] = df
         return
@@ -128,7 +139,7 @@ class DANUBE_database:
         if ( f_name == ''): # Generate a temporary output file for CSV
             f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
             f_name = f.name
-        print('Exporting DANUBE Extended Database to :'+ f_name)
+        print_d('Exporting DANUBE Extended Database to :'+ f_name)
         self.DANUBE_database_extended.to_csv(f_name, sep=',', encoding='utf-8', index=False)
         return f_name
     
@@ -137,7 +148,7 @@ class DANUBE_database:
         if ( f_name == ''): # Generate a temporary output file for CSV
             f = tempfile.NamedTemporaryFile(delete=False, suffix='.csv')
             f_name = f.name
-        print('Exporting DANUBE Generalized Database to :'+ f_name)
+        print_d('Exporting DANUBE Generalized Database to :'+ f_name)
         self.DANUBE_database_generalized.to_csv(f_name, sep=',', encoding='utf-8', index=False)
         return f_name
 
@@ -169,7 +180,7 @@ class DANUBE_database:
         if not df2.empty:
             danube_construction_period = df2.values[0]
         else:
-            print("Warning: ", construct_date, ' is not defined in DANUBE. Default P7 period used')
+            print_d("Warning: ", construct_date, ' is not defined in DANUBE. Default P7 period used')
         return danube_construction_period
     
     # Return DANUBE Material Territory from building's location (at DEPARTEMENT or COMMUNE scale) and Period
@@ -186,7 +197,7 @@ class DANUBE_database:
                     ### All other P2-P7 Territories
                     danube_territory = territoire['Terr_P2'].values[0]
             else:
-                print("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+                print_d("Warning: territory for Period ",  construction_period, ' and Location DEPT: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
         elif scale == 'COMMUNE': ### Use TERRITOIRES_PERIODES-COMMUNE table
             territoires_periodes = self.DANUBE_tables["TERRITOIRES_PERIODES_COMMUNE"]
             territoire = territoires_periodes.loc[territoires_periodes['INSEE_COM'] == building_location]
@@ -197,10 +208,10 @@ class DANUBE_database:
                     ### All other P2-P7 Territories
                     danube_territory = territoire['Terr_P2'].values[0]
             else:
-                print("Warning: territory for Period ",  construction_period, ' and Location COMMUNE: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
+                print_d("Warning: territory for Period ",  construction_period, ' and Location COMMUNE: ', building_location, ' is not defined in DANUBE. Default territory FRANCE used')
              #  print('Error in DANUBE_get_territory: Territory\'s commune scale not yet implemented')
         else:
-            print('Error in DANUBE_get_territory: ',scale,' scale is unknown... Returning default FRANCE territory.')
+            print_d('Error in DANUBE_get_territory: ',scale,' scale is unknown... Returning default FRANCE territory.')
         return danube_territory
     
     # Get DANUBE core archetype (only from Catalogue) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
@@ -216,7 +227,7 @@ class DANUBE_database:
         if not archetype.empty:
             danube_archetype = archetype['ID_ARCHETYPE'].values[0]
         else:
-            print("Warning: Archetype for Period ", periode, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
+            print_d("Warning: Archetype for Period ", periode, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
         return danube_archetype
     
     #Get DANUBE archetype (contained in Generalized DataBase) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
@@ -225,7 +236,7 @@ class DANUBE_database:
         danube_archetype="UNKNOWN" # Default value for unknown archetype
         danube_archetypes_all = self.DANUBE_database_generalized
         if danube_archetypes_all.empty:
-            print('DANUBE extended database is empty. Cannot get informations for archetypes...')
+            print_d('DANUBE extended database is empty. Cannot get informations for archetypes...')
             return danube_archetype
         periode  = self.DANUBE_get_period_from_date(Construction_date) # Get Period
         territoire = self.DANUBE_get_territory(Location, periode, scale)      # Get Territory
@@ -235,7 +246,7 @@ class DANUBE_database:
         if not archetype.empty:
             danube_archetype = archetype['ID_ARCHETYPE'].values[0]
         else:
-            print("Warning: Archetype for Period ",  periode, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
+            print_d("Warning: Archetype for Period ",  periode, ' and Location: ', Location, ' is not defined in DANUBE. Default Archetype ',danube_archetype, 'is used')
         return danube_archetype
     
     #Get All DANUBE's informations for an archetype
@@ -244,13 +255,13 @@ class DANUBE_database:
         infos = pd.DataFrame() ### Empty Dataframe
         danube_all_archetypes_info = self.DANUBE_database_generalized
         if danube_all_archetypes_info.empty:
-            print('DANUBE generalized database is empty. Cannot get informations for archetypes :' + id_archetype + '...')
+            print_d('DANUBE generalized database is empty. Cannot get informations for archetypes :' + id_archetype + '...')
             return infos
         infos_rows = danube_all_archetypes_info.loc[(danube_all_archetypes_info['ID_ARCHETYPE'] == id_archetype)]
         if not infos_rows.empty:
             infos = infos_rows # Dataframe! Get individual values with column index. Ex: infos_rows['NUMERO_PERIODE'].values[0]
         else:
-            print('Warning: Archetype ' + id_archetype+' is not defined in DANUBE.')
+            print_d('Warning: Archetype ' + id_archetype+' is not defined in DANUBE.')
         return infos
 
 if __name__ == '__main__':

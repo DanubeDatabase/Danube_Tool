@@ -48,7 +48,11 @@ from qgis.core import (Qgis,
                        QgsProcessingMultiStepFeedback,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterDefinition,
+                       QgsProject, QgsApplication, QgsField, QgsFeatureRequest, QgsVectorLayer,
+                       edit
                        )
+from qgis.PyQt.QtCore import QVariant
+
 ### Import processing (QGIS >= 3.4) - For QGIS < 3.4 : from qgis import processing
 import processing
 
@@ -101,7 +105,10 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         """
         Here is where the processing itself takes place.
         """
-
+        ### Import DANUBE DATABASE module, create instance and load DANUBE data
+        from PyDANUBE import DANUBE_database
+        db = DANUBE_database()
+        db.DANUBE_load_database()
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
@@ -139,8 +146,58 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         # statistics, etc. These should all be included in the returned
         # dictionary, with keys matching the feature corresponding parameter
         # or output names.
-        danube_process_launch.process_function_launch(self, parameters, context, feedback)
-        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["id"]: self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]}
+
+        feedback.pushInfo("Launching DANUBE process phase......")
+        #danube_process_launch.process_function_launch(self, parameters, context, feedback)
+
+        ## Create output layer
+        layer_source = self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"]
+        if DEBUG: QgsMessageLog.logMessage('DANUBE_BUILD_PREPROCESS Layer source:'+str(self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"].source()), 'DANUBE tool', level=Qgis.Info)
+        #layer_destination_plugin = self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]
+        layer_source.selectAll()
+        layer_destination_plugin = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
+        layer_source.removeSelection()
+        if DEBUG: QgsMessageLog.logMessage('Initial DANUBE layer created...', 'DANUBE tool', level=Qgis.Info)
+        ### Add DANUBE archetype attribute
+        # Not necessary : layer_destination_plugin.startEditing()
+
+        pr = layer_destination_plugin.dataProvider()
+        pr.addAttributes([QgsField('danube_archetype', QVariant.String)])
+        layer_destination_plugin.updateFields()
+        print(layer_destination_plugin.fields().names())
+        request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(
+            ['danube_archetype', 'cm_typologie_map', 'cm_usage_map', 'cm_year_map', 'cm_location_comm'],
+            layer_destination_plugin.fields())
+        index_archetype = layer_destination_plugin.fields().indexFromName("danube_archetype")
+        index_typo = layer_destination_plugin.fields().indexFromName("cm_typologie_map")
+        index_usage = layer_destination_plugin.fields().indexFromName("cm_usage_map")
+        index_date = layer_destination_plugin.fields().indexFromName("cm_year_map")
+        index_location = layer_destination_plugin.fields().indexFromName("cm_location_city")
+        print('Indexes:', index_archetype, index_typo, index_usage, index_date, index_location)
+        # Compute the number of steps to display within the progress bar and
+        # get features from source
+        total = 100.0 / layer_destination_plugin.featureCount() if layer_destination_plugin.featureCount() else 0
+        attr_map = {}
+        current = 0
+        for line in layer_destination_plugin.getFeatures(request):
+            if feedback.isCanceled():
+                break
+            ### Get Archetype from DANUBE
+            ### TODO : Get real value from Database
+            archetype = str(line[index_typo]) + '-' + str(line[index_usage]) + '-' + str(line[index_date])
+            ### TODO : Optimize: Location is constant in loop (hypothesis) - Data fetc can be optimized
+            """
+            archetype = db.DANUBE_get_archetype(Nom_typologie=str(line[index_typo]), Usage=str(line[index_usage]),
+                                                     Construction_date=str(int(float(line[index_date]))),
+                                                     Location=str(line[index_location]), scale='COMMUNE')
+            """
+            attr_map[line.id()] = {index_archetype: archetype}
+            feedback.setProgress(int(current * total))
+            current = current + 1
+        layer_destination_plugin.dataProvider().changeAttributeValues(attr_map)
+
+        #return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["id"]: self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"]}
+        return {self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["id"]: layer_destination_plugin}
 
     def name(self):
         """
