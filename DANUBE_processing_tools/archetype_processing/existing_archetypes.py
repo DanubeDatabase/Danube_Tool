@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from config_show import print_log, timed_execution
+from config_show import print_log
 from category_mapping.map_reference.shared_ref import dataframe_to_dictionary, PATH_DANUBE_TABLES_FOLDER
 
 
@@ -51,13 +51,15 @@ def get_danube_archs_in_df(df, mapping_id_arch, location="dept"):
     df[nom_first_level] = df['usage_danube'] + '-' + df['typology_danube'] + '-' + df['period_danube'] + '-' + df[
         nom_territory]
     df['ID_' + nom_first_level] = df[nom_first_level].map(mapping_id_arch)
-    print_log(df[[nom_first_level, 'ID_' + nom_first_level, 'usage_danube', 'typology_danube', 'period_danube', 'territory_dept', 'territory_comm']].head(2))
+    print_log(df[[nom_first_level, 'ID_' + nom_first_level, 'usage_danube', 'typology_danube', 'period_danube',
+                  'territory_dept', 'territory_comm']].head(2))
 
     # archetype if the territory is FRANCE
     nom_france_level = f"arch_{location}_if_france_level"
     df[nom_france_level] = df['usage_danube'] + '-' + df['typology_danube'] + '-' + df['period_danube'] + '-FRANCE'
     df['ID_' + nom_france_level] = df[nom_france_level].map(mapping_id_arch)
-    print_log(df[[nom_first_level, 'ID_' + nom_first_level, nom_france_level, 'ID_' + nom_france_level, 'usage_danube', 'typology_danube', 'period_danube', 'territory_dept', 'territory_comm']].head(2))
+    print_log(df[[nom_first_level, 'ID_' + nom_first_level, nom_france_level, 'ID_' + nom_france_level, 'usage_danube',
+                  'typology_danube', 'period_danube', 'territory_dept', 'territory_comm']].head(2))
 
     # Test if the territory could be FRANCE_PIERRE_ARDOISE
     nom_pierre_ardoise = f"arch_{location}_if_pier_ard"
@@ -82,32 +84,29 @@ def get_danube_archs_in_df(df, mapping_id_arch, location="dept"):
         df['ID_' + nom_pierre_ardoise] = df[nom_pierre_ardoise].map(mapping_id_arch)
 
         df[nom_archetype] = df.apply(lambda row: row[nom_first_level] if pd.notnull(row['ID_' + nom_first_level]) else
-                                            (row[nom_pierre_ardoise] if pd.notnull(row['ID_' + nom_pierre_ardoise]) else
-                                             (row[nom_france_level] if pd.notnull(row['ID_' + nom_france_level]) else
-                                              row[nom_first_level])),
-                                      axis=1)
+        (row[nom_pierre_ardoise] if pd.notnull(row['ID_' + nom_pierre_ardoise]) else
+         (row[nom_france_level] if pd.notnull(row['ID_' + nom_france_level]) else
+          row[nom_first_level])),
+                                     axis=1)
 
         df[nom_archetype_loc_id] = df['ID_' + nom_first_level].fillna(
-                                                df['ID_' + nom_pierre_ardoise].fillna(
-                                                                    df['ID_' + nom_france_level]))
+            df['ID_' + nom_pierre_ardoise].fillna(
+                df['ID_' + nom_france_level]))
     else:
         df[nom_archetype] = df.apply(lambda row: row[nom_first_level] if pd.notnull(row['ID_' + nom_first_level]) else
-                                             (row[nom_france_level] if pd.notnull(row['ID_' + nom_france_level]) else
-                                              row[nom_first_level]),
-                                      axis=1)
+        (row[nom_france_level] if pd.notnull(row['ID_' + nom_france_level]) else
+         row[nom_first_level]),
+                                     axis=1)
 
         df[nom_archetype_loc_id] = df['ID_' + nom_first_level].fillna(
             df['ID_' + nom_france_level])
 
-    # df[nom_archetype_loc_id] = df[nom_archetype].map(mapping_id_arch).fillna(
-    #     df[nom_france_level].map(mapping_id_arch)).fillna(
-    #     df[nom_pierre_ardoise].map(mapping_id_arch))
 
+def main_existing_archetypes(df, PATH_DANUBE_TABLES_FOLDER):
+    print_log("*" * 100)
+    print_log("Run step 1 of archetype processing : main_existing_archetypes")
+    print_log("*" * 100)
 
-def main_archetype(df, PATH_DANUBE_TABLES_FOLDER):
-    print_log("*" * 100)
-    print_log("Run archetype danube")
-    print_log("*" * 100)
 
     mapping_id_arch = get_dict_to_map_archetype_danube(PATH_DANUBE_TABLES_FOLDER)
 

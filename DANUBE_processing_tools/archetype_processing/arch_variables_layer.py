@@ -1,5 +1,4 @@
 import tempfile
-import os
 
 import processing
 from qgis.core import Qgis, QgsMessageLog, QgsVectorLayer, QgsProject
@@ -59,18 +58,15 @@ def join_csv_data_build_lay(csv_layer, DANUBE_LAYERS):
     return layer_joined_csv_data
 
 
-def get_preprocess_output_layer(df, DANUBE_LAYERS):
-    print_log("+" * 100)
-    print_log("Run get_output_layer : Join results from category mapping to BUILD_BASE")
-    print_log("+" * 100)
+def get_arch_output_layer(df, DANUBE_LAYERS):
+    print_log("*" * 100)
+    print_log("Run step 3 of archetype processing : get_arch_output_layer - provide a Qgis layer with all the fields used to define an archetype")
+    print_log("*" * 100)
 
     print(df.columns)
 
     layer_from_csv, csv_path = convert_df_to_layer(df)
 
-    DANUBE_LAYERS['BUILD_PP_OUTPUT'] = {"id": None, "type": None, 'layer': None}
-    DANUBE_LAYERS['BUILD_PP_OUTPUT']['layer'] = join_csv_data_build_lay(layer_from_csv, DANUBE_LAYERS)
-    print_log('\nDANUBE_LAYERS.keys(): ', DANUBE_LAYERS.keys())
+    preprocess_output_layer  = join_csv_data_build_lay(layer_from_csv, DANUBE_LAYERS)
 
-    # os.unlink(csv_path) # csv file cannot be deleted, since it is used in the output_layer
-    return DANUBE_LAYERS
+    return preprocess_output_layer
