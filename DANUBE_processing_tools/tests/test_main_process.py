@@ -9,7 +9,6 @@ from tests.paths import SAMPLE_DATA_PATH
 SMALL_SAMPLE = True  # if True, it uses local small samples of data to test the workflow;
 # if False, it uses local data from Haute-Garonne and Toulouse to test the workflow.
 
-
 def open_local_data_sample(small_sample):
     """Define DANUBE_LAYERS for test
      Adjust the following paths in a different computer:
@@ -75,27 +74,3 @@ if __name__ == '__console__':
     DANUBE_LAYERS = timed_execution(open_local_data_sample, SMALL_SAMPLE)
     timed_execution(main_process_all, DANUBE_LAYERS)
 
-
-
-
-
-
-
-#________________________________________funcs to keep in case______________________________________________
-    # if DANUBE_LAYERS["GEO_BUILD_URTF"]["layer"].isValid():
-    #     QgsMessageLog.logMessage(
-    #         ' In main_dc_data_consolidation() BEFORE -  DANUBE_LAYERS.[GEO_BUILD_URTF].source (valid):' + str(DANUBE_LAYERS["GEO_BUILD_URTF"]["layer"].source()) + "\n",
-    #         'DANUBE tool', level=Qgis.Info)
-    # else:
-    #     QgsMessageLog.logMessage(
-    #         ' In main_dc_data_consolidation() BEFORE - NOT VALID LAYER!!!!',
-    #         'DANUBE tool', level=Qgis.Info)
-
-    # def copy_layer(source_layer):
-    #     source_layer.selectAll()
-    #     layer_copy = processing.run("native:saveselectedfeatures", {'INPUT': source_layer, 'OUTPUT': 'memory:'})['OUTPUT']
-    #     source_layer.removeSelection()
-    #     name_layer_copy = f"{source_layer.name()}_copy"
-    #     layer_copy.setName(name_layer_copy) # comment later, just for test
-    #     QgsProject.instance().addMapLayer(layer_copy) # comment later, just for test
-    #     return layer_copy

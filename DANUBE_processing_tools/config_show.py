@@ -26,7 +26,7 @@ def print_log(*args):
 
 def print_fields(layer):
     """Print the fields of a layer if the 'debug_print' variable is True"""
-    print_log(f"\n{layer.name()}:\n", layer.fields().names())
+    print_log(f"\nFields from {layer.name()}:\n", layer.fields().names())
 
 
 def timed_execution(func, *args, **kwargs):

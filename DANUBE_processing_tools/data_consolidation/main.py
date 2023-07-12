@@ -1,4 +1,4 @@
-from config_show import print_log, print_memory_use, timed_execution, add_layer_gui
+from config_show import print_log, print_memory_use, timed_execution
 from data_consolidation.dc1_building_base_layer import main_dc_1
 from data_consolidation.dc2_create_spatial_index import main_dc_2
 from data_consolidation.dc3_select_zone import main_dc_3
