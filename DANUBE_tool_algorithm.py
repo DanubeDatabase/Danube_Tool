@@ -30,6 +30,8 @@ __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LI
 
 __revision__ = '$Format:%H$'
 
+ADD_ALL_LAYERS = True
+
 import os
 from pathlib import Path
 import copy
@@ -60,6 +62,9 @@ import processing
 #try: DANUBE_LAYERS
 #except NameError: from DANUBE_config import DANUBE_LAYERS
 from DANUBE_config import DANUBE_LAYERS, DEBUG
+
+#TEMPO: Force DEBUG mode:
+DEBUG = True
 
 from DANUBE_processing_tools import danube_process_launch_old
 
@@ -109,19 +114,19 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         from PyDANUBE import DANUBE_database
         db = DANUBE_database()
         db.DANUBE_load_database()
+        # Add and initialize new DANUBE_tool_LAYERS attribute's values with input layers constants, using deepcopy !
+        setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
         # Retrieve the feature source and sink. The 'dest_id' variable is used
         # to uniquely identify the feature sink, and must be included in the
         # dictionary returned by the processAlgorithm function.
         #source = self.parameterAsSource(parameters, self.INPUT, context)
         #source_folder = self.parameterAsFile(parameters, self.INPUT_BUILDINGS, context)
-        source = self.parameterAsSource(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        #source = self.parameterAsSource(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
         ### Create a sink layer with same property as DANUBE_BUILD_PREPROCESS layer
-        (sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"],
-                context, source.fields(), source.wkbType(), source.sourceCrs())
-        # Add and initialize new DANUBE_tool_LAYERS attribute's values with input layers constants, using deepcopy !
-        setattr(self,'DANUBE_tool_LAYERS', copy.deepcopy(DANUBE_LAYERS))
-        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = self.parameterAsVectorLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
-        output_data_layer = self.parameterAsOutputLayer(parameters, DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"], context)
+        #(sink, dest_id) = self.parameterAsSink(parameters, DANUBE_LAYERS["DANUBE_BUILD_DATA"]["id"],
+        #        context, source.fields(), source.wkbType(), source.sourceCrs())
+        self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["layer"] = self.parameterAsVectorLayer(parameters, self.DANUBE_tool_LAYERS["DANUBE_BUILD_PREPROCESS"]["id"], context)
+        output_data_layer = self.parameterAsOutputLayer(parameters, self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["id"], context)
         self.DANUBE_tool_LAYERS["DANUBE_BUILD_DATA"]["layer"] = output_data_layer
         """
         # Compute the number of steps to display within the progress bar and
@@ -157,23 +162,29 @@ class DANUBEtoolAlgorithm(QgsProcessingAlgorithm):
         layer_source.selectAll()
         layer_destination_plugin = processing.run("native:saveselectedfeatures", {'INPUT': layer_source, 'OUTPUT':'TEMPORARY_OUTPUT'})['OUTPUT']
         layer_source.removeSelection()
-        if DEBUG: QgsMessageLog.logMessage('Initial DANUBE layer created...', 'DANUBE tool', level=Qgis.Info)
+        if DEBUG: QgsMessageLog.logMessage('Initial DANUBE layer created...'+'Layer:'+str(layer_destination_plugin.source()), 'DANUBE tool', level=Qgis.Info)
+        if ADD_ALL_LAYERS: QgsProject.instance().addMapLayer(layer_destination_plugin)
+
         ### Add DANUBE archetype attribute
-        # Not necessary : layer_destination_plugin.startEditing()
+        layer_destination_plugin.startEditing()
 
         pr = layer_destination_plugin.dataProvider()
         pr.addAttributes([QgsField('danube_archetype', QVariant.String)])
         layer_destination_plugin.updateFields()
-        print(layer_destination_plugin.fields().names())
+        #print(layer_destination_plugin.fields().names())
+        if DEBUG: QgsMessageLog.logMessage('Fields:' + str(list(layer_destination_plugin.fields().names())), 'DANUBE tool', level=Qgis.Info)
+
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry).setSubsetOfAttributes(
-            ['danube_archetype', 'cm_typologie_map', 'cm_usage_map', 'cm_year_map', 'cm_location_comm'],
+            ['danube_archetype', 'typology_danube', 'usage_danube', 'year_constr', 'location_comm'],
             layer_destination_plugin.fields())
         index_archetype = layer_destination_plugin.fields().indexFromName("danube_archetype")
-        index_typo = layer_destination_plugin.fields().indexFromName("cm_typologie_map")
-        index_usage = layer_destination_plugin.fields().indexFromName("cm_usage_map")
-        index_date = layer_destination_plugin.fields().indexFromName("cm_year_map")
-        index_location = layer_destination_plugin.fields().indexFromName("cm_location_city")
+        index_typo = layer_destination_plugin.fields().indexFromName("typology_danube")
+        index_usage = layer_destination_plugin.fields().indexFromName("usage_danube")
+        index_date = layer_destination_plugin.fields().indexFromName("year_constr")
+        index_location = layer_destination_plugin.fields().indexFromName("location_comm")
         print('Indexes:', index_archetype, index_typo, index_usage, index_date, index_location)
+        if DEBUG: QgsMessageLog.logMessage('Indexes:' + str(list(index_archetype, index_typo, index_usage, index_date, index_location)), 'DANUBE tool', level=Qgis.Info)
+
         # Compute the number of steps to display within the progress bar and
         # get features from source
         total = 100.0 / layer_destination_plugin.featureCount() if layer_destination_plugin.featureCount() else 0

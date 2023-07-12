@@ -174,6 +174,8 @@ class DANUBE_database:
     # Return DANUBE period from building's construction date
     def DANUBE_get_period_from_date(self, construct_date = '2023'):
         danube_construction_period = 'P7'
+        if construct_date == "<NA>" : ### Construction date is unknown - Return "<NA>" for period
+            return "<NA>"
         period_df = self.DANUBE_tables["PERIODES"]
         construct_date_int = int(construct_date)
         df2 = period_df.loc[(period_df['DATE_DEBUT']<=construct_date_int) & (period_df['DATE_FIN']>=construct_date_int)]['PERIODE']
@@ -186,6 +188,9 @@ class DANUBE_database:
     # Return DANUBE Material Territory from building's location (at DEPARTEMENT or COMMUNE scale) and Period
     # Territory is distinct for P1 period and P2-P7 period
     def DANUBE_get_territory(self, building_location = '31', construction_period = 'P7', scale='DEPARTEMENT'):
+        if construction_period == "<NA>":
+            print_d('Error in DANUBE_get_territory: construction period is unknwon ')
+            return "<NA>"
         danube_territory = 'FRANCE'
         if scale == 'DEPARTEMENT': ### Use TERRITOIRES_PERIODES_DEPARTEMENT table
             territoires_periodes = self.DANUBE_tables["TERRITOIRES_PERIODES_DEPARTEMENT"]
@@ -217,7 +222,9 @@ class DANUBE_database:
     # Get DANUBE core archetype (only from Catalogue) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
     # And optional input scale 'DEPARTEMENT' (default) or 'COMMUNE'.
     def DANUBE_get_core_archetype(self, Nom_typologie="P", Usage="HABITAT", Construction_date="2023", Location="31", scale='DEPARTEMENT'):
-        danube_archetype="UNKNOWN" # Default value
+        if Construction_date == "<NA>" : # Construction date is unknown
+            return "<NA>"
+        danube_archetype="<NA>" # Default value
         danube_archetypes_all = self.DANUBE_tables["CATALOGUE"]
         periode  = self.DANUBE_get_period_from_date(Construction_date) # Get Period
         territoire = self.DANUBE_get_territory(Location, periode, scale)      # Get Territory
@@ -233,7 +240,9 @@ class DANUBE_database:
     #Get DANUBE archetype (contained in Generalized DataBase) from 4 main variables NOM_TYPOLOGIE, USAGE, CONSTRUCTION_DATE, LOCATION.
     # And optional input scale 'DEPARTEMENT' (default) or 'COMMUNE'.
     def DANUBE_get_archetype(self, Nom_typologie="P", Usage="HABITAT", Construction_date="2023", Location="31", scale='DEPARTEMENT'):
-        danube_archetype="UNKNOWN" # Default value for unknown archetype
+        if Construction_date == "<NA>" : # Construction date is unknown
+            return "<NA>"
+        danube_archetype="<NA>" # Default value for unknown archetype
         danube_archetypes_all = self.DANUBE_database_generalized
         if danube_archetypes_all.empty:
             print_d('DANUBE extended database is empty. Cannot get informations for archetypes...')
