@@ -1,0 +1,54 @@
+ID_ARCHETYPE,archetype,perc_simple_vit_3CL,perc_double_vit_3CL,perc_triple_vit_3CL,main_vit_3CL,main_vit_Danube,Danube_equal_3CL
+COM_I_P1_TF,P1-I-COMMERCE-FRANCE,9.4,90.4,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TBO_TUI,P1-I-HABITAT-FRANCE_BOIS_TUILE,11.1,88.2,0.7,double vitrage,simple vitrage,False
+HAB_I_P1_TBR_TUI,P1-I-HABITAT-FRANCE_BRIQUE_TUILE,9.1,90.5,0.3,double vitrage,simple vitrage,False
+HAB_I_P1_TCAL_ARD,P1-I-HABITAT-FRANCE_PIERRE_CALCAIRE_ARDOISE,15.1,84.7,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TCAL_TUI,P1-I-HABITAT-FRANCE_PIERRE_CALCAIRE_TUILE,15.1,84.7,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TCA_ZIN,P1-I-HABITAT-FRANCE_PIERRE_CALCAIRE_ZINC,15.1,84.7,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TGNE_TUI,P1-I-HABITAT-FRANCE_PIERRE_GNEISS_TUILE,16.6,83.4,0.0,double vitrage,simple vitrage,False
+HAB_I_P1_TGRA_ARD,P1-I-HABITAT-FRANCE_PIERRE_GRANITE_ARDOISE,8.0,91.9,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TGRA_TUI,P1-I-HABITAT-FRANCE_PIERRE_GRANITE_TUILE,8.0,91.9,0.2,double vitrage,simple vitrage,False
+HAB_I_P1_TGRE_ARD,P1-I-HABITAT-FRANCE_PIERRE_GRES_ARDOISE,8.4,90.8,0.8,double vitrage,simple vitrage,False
+HAB_I_P1_TGRE_TUI,P1-I-HABITAT-FRANCE_PIERRE_GRES_TUILE,8.4,90.8,0.8,double vitrage,simple vitrage,False
+HAB_I_P1_TMEU,P1-I-HABITAT-FRANCE_PIERRE_MEULIERE_TUILE,5.6,93.7,0.7,double vitrage,simple vitrage,False
+HAB_I_P1_TSCH_TUI,P1-I-HABITAT-FRANCE_PIERRE_SCHISTE_TUILE,18.8,81.2,0.0,double vitrage,simple vitrage,False
+HAB_I_P1_TER_TUI,P1-I-HABITAT-FRANCE_TERRE_TUILE,6.5,93.4,0.1,double vitrage,simple vitrage,False
+HAB_P_P1_TBO_TUI,P1-P-HABITAT-FRANCE_BOIS_TUILE,17.6,81.9,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TBR_TUI,P1-P-HABITAT-FRANCE_BRIQUE_TUILE,12.3,87.2,0.3,double vitrage,simple vitrage,False
+HAB_P_P1_TCAL_TUI,P1-P-HABITAT-FRANCE_PIERRE_CALCAIRE_TUILE,15.7,83.9,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TCA_ZIN,P1-P-HABITAT-FRANCE_PIERRE_CALCAIRE_ZINC,15.7,83.9,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TGNE_TUI,P1-P-HABITAT-FRANCE_PIERRE_GNEISS_TUILE,19.4,80.2,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TGRA_ARD,P1-P-HABITAT-FRANCE_PIERRE_GRANITE_ARDOISE,13.4,86.0,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TGRA_TUI,P1-P-HABITAT-FRANCE_PIERRE_GRANITE_TUILE,13.4,86.0,0.4,double vitrage,simple vitrage,False
+HAB_P_P1_TGRE_ARD,P1-P-HABITAT-FRANCE_PIERRE_GRES_ARDOISE,13.1,86.3,0.6,double vitrage,simple vitrage,False
+HAB_P_P1_TGRE_TUI,P1-P-HABITAT-FRANCE_PIERRE_GRES_TUILE,13.1,86.3,0.6,double vitrage,simple vitrage,False
+HAB_P_P1_TMEU,P1-P-HABITAT-FRANCE_PIERRE_MEULIERE_TUILE,12.0,87.0,1.0,double vitrage,simple vitrage,False
+HAB_P_P1_TSCH_TUI,P1-P-HABITAT-FRANCE_PIERRE_SCHISTE_TUILE,25.4,74.4,0.1,double vitrage,simple vitrage,False
+HAB_P_P1_TER_TUI,P1-P-HABITAT-FRANCE_TERRE_TUILE,12.2,87.1,0.7,double vitrage,simple vitrage,False
+COM_I_P2_TF,P2-I-COMMERCE-FRANCE,18.0,81.9,0.2,double vitrage,simple vitrage,False
+HAB_I_P2_TAR,P2-I-HABITAT-FRANCE_ARDOISE,18.9,80.8,0.3,double vitrage,simple vitrage,False
+HAB_I_P2_TBR,P2-I-HABITAT-FRANCE_TUILE,18.9,80.8,0.3,double vitrage,simple vitrage,False
+TER_I_P2_TF,P2-I-TERTIAIRE-FRANCE,15.9,83.4,0.6,double vitrage,simple vitrage,False
+HAB_P_P2_TAR,P2-P-HABITAT-FRANCE_ARDOISE,22.6,76.6,0.6,double vitrage,simple vitrage,False
+HAB_P_P2_TBR,P2-P-HABITAT-FRANCE_TUILE,22.6,76.6,0.6,double vitrage,simple vitrage,False
+HAB_I_P3_TAR,P3-I-HABITAT-FRANCE_ARDOISE,17.3,82.4,0.3,double vitrage,simple vitrage,False
+HAB_I_P3_TBR,P3-I-HABITAT-FRANCE_TUILE,17.3,82.4,0.3,double vitrage,simple vitrage,False
+HAB_P_P3_TAR,P3-P-HABITAT-FRANCE_ARDOISE,13.1,86.3,0.6,double vitrage,simple vitrage,False
+HAB_P_P3_TBR,P3-P-HABITAT-FRANCE_TUILE,13.1,86.3,0.6,double vitrage,simple vitrage,False
+HAB_I_P4_TAR,P4-I-HABITAT-FRANCE_ARDOISE,6.9,92.6,0.4,double vitrage,simple vitrage,False
+HAB_I_P4_TBR,P4-I-HABITAT-FRANCE_TUILE,6.9,92.6,0.4,double vitrage,simple vitrage,False
+HAB_P_P4_TAR,P4-P-HABITAT-FRANCE_ARDOISE,5.2,94.3,0.5,double vitrage,simple vitrage,False
+HAB_P_P4_TBR,P4-P-HABITAT-FRANCE_TUILE,5.2,94.3,0.5,double vitrage,simple vitrage,False
+HAB_I_P5_TAR,P5-I-HABITAT-FRANCE_ARDOISE,2.1,97.7,0.1,double vitrage,double vitrage,True
+HAB_I_P5_TBR,P5-I-HABITAT-FRANCE_TUILE,2.1,97.7,0.1,double vitrage,double vitrage,True
+HAB_P_P5_TAR,P5-P-HABITAT-FRANCE_ARDOISE,1.2,98.5,0.2,double vitrage,double vitrage,True
+HAB_P_P5_TBR,P5-P-HABITAT-FRANCE_TUILE,1.2,98.5,0.2,double vitrage,double vitrage,True
+HAB_I_P6_TAR,P6-I-HABITAT-FRANCE_ARDOISE,1.3,98.5,0.2,double vitrage,double vitrage,True
+HAB_I_P6_TBR,P6-I-HABITAT-FRANCE_TUILE,1.3,98.5,0.2,double vitrage,double vitrage,True
+TER_I_P6_TF,P6-I-TERTIAIRE-FRANCE,4.9,94.8,0.3,double vitrage,double vitrage,True
+HAB_P_P6_TAR,P6-P-HABITAT-FRANCE_ARDOISE,0.6,98.9,0.5,double vitrage,double vitrage,True
+HAB_P_P6_TBR,P6-P-HABITAT-FRANCE_TUILE,0.6,98.9,0.5,double vitrage,double vitrage,True
+HAB_I_P7_TAR,P7-I-HABITAT-FRANCE_ARDOISE,5.9,92.8,1.2,double vitrage,double vitrage a isolation renforcee,True
+HAB_I_P7_TBR,P7-I-HABITAT-FRANCE_TUILE,5.9,92.8,1.2,double vitrage,double vitrage a isolation renforcee,True
+HAB_P_P7_TAR,P7-P-HABITAT-FRANCE_ARDOISE,3.9,94.8,1.3,double vitrage,double vitrage a isolation renforcee,True
+HAB_P_P7_TBR,P7-P-HABITAT-FRANCE_TUILE,3.9,94.8,1.3,double vitrage,double vitrage a isolation renforcee,True

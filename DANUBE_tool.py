@@ -50,10 +50,10 @@ danube_dirpath =  str(Path(user_dirpath) / "python" / "plugins" / "Danube_Tool")
 if danube_dirpath not in sys.path:
     sys.path.append(danube_dirpath)
 
-#danube_preprocess_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool\DANUBE_preprocessing_tools')
-danube_preprocess_dirpath = str(Path(user_dirpath)  / "python" / "plugins" / "Danube_Tool" / "DANUBE_preprocessing_tools")
-if danube_preprocess_dirpath not in sys.path:
-    sys.path.append(danube_preprocess_dirpath)
+#danube_process_dirpath = os.path.join(user_dirpath, r'python\plugins\Danube_Tool\DANUBE_processing_tools')
+danube_process_dirpath = str(Path(user_dirpath) / "python" / "plugins" / "Danube_Tool" / "DANUBE_processing_tools")
+if danube_process_dirpath not in sys.path:
+    sys.path.append(danube_process_dirpath)
 
 from .DANUBE_tool_provider import DANUBEtoolProvider
 ### Import DANUBE layers definition
@@ -76,6 +76,6 @@ class DANUBEtoolPlugin(object):
 
     def unload(self):
         ### Remove Modules paths
-        sys.path.remove(danube_preprocess_dirpath)
+        sys.path.remove(danube_process_dirpath)
         sys.path.remove(danube_dirpath)
         QgsApplication.processingRegistry().removeProvider(self.provider)

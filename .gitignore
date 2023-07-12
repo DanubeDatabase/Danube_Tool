@@ -3,6 +3,5 @@
 **/.ipynb_checkpoints
 **/.ipynb
 
-DANUBE_preprocessing_tools/dev_addsys.py
-DANUBE_preprocessing_tools/dev_reload.py
-DANUBE_preprocessing_tools/data_consolidation/*.csv
+DANUBE_processing_tools/dev_addsys.py
+DANUBE_processing_tools/dev_reload.py
