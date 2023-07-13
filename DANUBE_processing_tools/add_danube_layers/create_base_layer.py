@@ -19,7 +19,7 @@ def provide_geometry_for_danube_layers(DANUBE_LAYERS):
               "provide a QGIS layer with only the field ID_BUILD and the geometry")
     print_log("*" * 100)
 
-    base_layer = copy_layer(DANUBE_LAYERS['GEO_BUILD_URTF']['layer'], 'BASE_LAYER')
+    base_layer = copy_layer(DANUBE_LAYERS['GEO_BUILD_IND']['layer'], 'BASE_LAYER')
 
     add_layer_gui(base_layer, 'base_layer_before')
     print_fields(base_layer)
@@ -31,6 +31,7 @@ def provide_geometry_for_danube_layers(DANUBE_LAYERS):
         f_idx = [base_layer.fields().indexFromName(field_name) for field_name in f_names]
         dict_field_idx = dict(zip(f_names, f_idx))
         dict_field_idx.pop('ID_BUILD')
+        dict_field_idx.pop('ID_SOURCE')
         idx_to_removed = list(dict_field_idx.values())
         res = base_layer.dataProvider().deleteAttributes(idx_to_removed)
         base_layer.updateFields()

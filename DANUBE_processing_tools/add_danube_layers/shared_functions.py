@@ -48,7 +48,7 @@ def join_danube_layer_base(danube_layer, base_layer):
     caps = layer_joined_csv_data.dataProvider().capabilities()
     # remove the repeated fields : ID_BUILD_2, arch_{loc}_id,
     if caps & QgsVectorDataProvider.DeleteAttributes:
-        idx_to_removed = [1, 3, 5]
+        idx_to_removed = [2, 4, 6]   # idx for fields which are doubled, as a result of df.merge of danube tables
         res = layer_joined_csv_data.dataProvider().deleteAttributes(idx_to_removed)
         layer_joined_csv_data.updateFields()
 
