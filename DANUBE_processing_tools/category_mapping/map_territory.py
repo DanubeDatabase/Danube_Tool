@@ -37,7 +37,7 @@ def define_territory(df, DANUBE_LAYERS, PATH_DANUBE_TABLES_FOLDER):
     df["territory_dept"] = np.where(pd.isna(df['period_danube']), np.nan,
                                     np.where(df['period_danube'] == 'P1', ter_dep_p1,
                                              ter_dep_p2))
-    df['territory_source'] = 'geoclimate'
+    df['territory_source'] = 'danube_territory'
     df['territory_quality'] = 'A'  # From geoclimate. It comes directly from city location.
 
 
