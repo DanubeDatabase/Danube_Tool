@@ -7,6 +7,8 @@ L’outil s’inscrit dans une chaîne de traitement de données urbaines basée
 
 Il est proposé sous la forme d'une extension au logiciel de [Système d'Informations Géographiques libre QGIS](https://qgis.org/), permettant de réduire sa complexité d'utilisation aux utilisateurs potentiels, ainsi que sa compatibilité avec les différentes plateformes et systèmes d'exploitation informatiques.
 
+![DANUBE_Tool result layers on Ubuntu example](https://github.com/DanubeDatabase/.github/blob/main/media/DANUBE_tool_Ubuntu_result_layers-medium.jpg)
+
 Plus d'information sur la page dédiée à l'[Outil DANUBE du site du LRA](https://lra.toulouse.archi.fr/lra/activites/projets/DANUBE/DANUBE_tool).
 <br/>
 Mise à jour : 14-02-2024
