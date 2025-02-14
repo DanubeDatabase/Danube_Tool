@@ -26,7 +26,7 @@ __author__ = 'Lorena de Carvalho Araujo, Serge Faraut - (C) LRA - ENSA Toulouse'
 __maintainer__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
 __date__ = '2023-06-19'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
-__version__ = 'v0.0.7'
+__version__ = 'v0.9b'
 __all__ = [
     "process_function_sample", "process_function_launch", "process_function_launch",
 ]

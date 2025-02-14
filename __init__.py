@@ -26,8 +26,8 @@
 
 __author__ =  'Serge Faraut, Lorena de Carvalho Araujo - (C) LRA - ENSA Toulouse'
 __maintainer__ = 'Serge Faraut - (C) LRA - ENSA Toulouse'
-__date__ = '2023-06-20'
-__version__ = '0.2.0d'
+__date__ = '2024-07-11'
+__version__ = '0.9b'
 __copyright__ = '(C) 2023 by (C) LRA - ENSA Toulouse / LMDC - INSA Toulouse / LISST - UT2J'
 
 
