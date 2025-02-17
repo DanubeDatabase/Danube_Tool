@@ -12,5 +12,7 @@ Il est proposé sous la forme d'une extension au logiciel de [Système d'Informa
 Téléchargement de l'outil Danube (extension QGIS) sur la page de [distribution des versions (Releases) de Github](https://github.com/DanubeDatabase/Danube_Tool/releases).
 <br />
 Plus d'information et documentation sur la page dédiée à l'[Outil DANUBE sur la page du projet sur le site du LRA](https://lra.toulouse.archi.fr/lra/activites/projets/DANUBE/DANUBE_tool).
+<br/><br/>
+Un financement a été apporté au développement de l'outil DANUBE au cours du [projet ADEME PAENDORA2](https://lra.toulouse.archi.fr/lra/activites/projets/paendora2) en réponse à l'appel à projet PACT²e 2021 (Planifier et Aménager, face au Changement climatique, la Transition des Territoires) - contrat n°21DAD0080
 <br/>
 Mise à jour : 14-02-2024
